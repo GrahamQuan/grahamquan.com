@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "2025-02-14",
+  description: `for testing 2025-02-14`,
+  date: "2025-02-14T15:00:00.000Z",
+};
+
+## Blog : host a `nextjs` app on `cloudflare pages` 
+
+## `wrangler.json`
+```json
+{
+  "name": "nextjs-intl-cloudflare",
+  "compatibility_date": "2024-09-23",
+  "compatibility_flags": ["nodejs_compat"],
+  "pages_build_output_dir": ".vercel/output/static"
+}
+```
+
+## test
+```ts
+const a = 1;
+const b = 2;
+const c = a + b;
+
+console.log('hello') 
+console.log('world') 
+```
+
+
+## `build`
+- when use `pnpm` change the `build` command on dashboard
+- https://github.com/cloudflare/next-on-pages/issues/544#issuecomment-1813349018
+
+```bash
+# npx @cloudflare/next-on-pages@1
+
+pnpm dlx @cloudflare/next-on-pages
+```
+
+## setup `env`
+- `.dev.vars`
+```txt
+# [!code filename:.env.local]
+API_KEY='API_KEY_DEV'
+
+NEXT_PUBLIC_SITE_URL='http://localhost:8788'
+```
+
+- use
+```bash
+process.env.API_KEY
+```
+
+## bug: cant set response headers
+
+Here's a comparison table between Cloudflare's Free and Pro plans:
+| Feature | Free Plan | Pro Plan ($20/month) |
+|---------|-----------|---------------------|
+| DDoS Protection | Basic Layer 3/4 & 7 protection | Enhanced Layer 7 protection + Analytics |
+| WAF | Basic preset rules | Custom rules + OWASP ModSecurity Core Rule Set |
+| Rate Limiting | Basic limits | Up to 10,000 rules with custom configurations |
+| Bot Protection | Basic Bot Fight Mode | Super Bot Fight Mode + Analytics |
+| SSL/TLS | Universal SSL | Advanced SSL options + Custom SSL configs |
+| Page Rules | 3 rules | 20 rules |
+| Cache Configuration | Basic | Advanced with custom rules |
+| Firewall Rules | Basic IP rules | Advanced expression-based rules |
+| Analytics | Basic | Real-time + Detailed insights |
+| Image Optimization | None | Polish + Image resizing |
+| Mobile Optimization | None | Mobile redirect rules |
+| Support | Community | Priority support |
+| Security Headers | Basic | Advanced customization |
+| Custom Error Pages | No | Yes |
+| Real-time Logs | No | Yes |
+| API Protection | Basic | Advanced with custom rules |
+| Bandwidth | Unlimited | Unlimited |
+| Web Analytics | Basic | Enhanced |
+| HTTP/3 | Yes | Yes + Enhanced |
+| Argo Smart Routing | No | Available (Additional cost) |
+| Load Balancing | No | No (Business/Enterprise only) |
+| Access (IAM) | No | No (Business/Enterprise only) |
+| Custom SSL Certificates | No | No (Business/Enterprise only) |
+| DDoS SLA | No | No (Enterprise only) |

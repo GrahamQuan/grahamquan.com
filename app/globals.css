@@ -1,21 +1,71 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+/* @plugin '../tailwind-custom-plugin.js'; */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-inter: var(--font-inter);
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(240 10% 3.9%);
+  color-scheme: light dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.dark {
+  color-scheme: dark;
+}
+.light {
+  color-scheme: light;
+}
+
+@variant dark {
+  &:where(.dark, .dark *) {
+    @slot;
+    --color-background: hsl(240 10% 3.9%);
+    --color-foreground: hsl(0 0% 98%);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:where(.system, .system *) {
+      @slot;
+    }
   }
 }
 
+@theme inline {
+  --spacing: 1px;
+  --breakpoint-mdx: 56rem;
+}
+
+@layer utilities {
+  .border-color {
+    @apply border-gray-950/5 dark:border-white/10;
+  }
+}
+
+code:not(pre > code) {
+  @apply rounded-sm bg-neutral-100 px-6 py-4 text-[85%] whitespace-break-spaces before:content-none after:content-none dark:bg-neutral-800;
+}
+
+code {
+  counter-reset: step;
+  counter-increment: step calc(var(--start-step, 1) - 1);
+}
+
+code .line::before {
+  content: counter(step);
+  counter-increment: step;
+  width: 1rem;
+  margin-right: 1rem;
+  display: inline-block;
+  color: rgba(115, 138, 148, 0.4);
+  user-select: none;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--color-foreground);
+  background: var(--color-background);
+  font-family: var(--font-inter);
 }
