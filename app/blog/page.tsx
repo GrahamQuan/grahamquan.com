@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
-import { formatDate, getBlogPostBySlug, getBlogPostSlugs, nonNullable } from '@/lib/blog-utils';
+import { getBlogPostBySlug, getBlogPostSlugs, nonNullable } from '@/lib/blog-utils';
+import { formatDate } from '@/lib/time-utils';
 
 export default async function Page() {
   let slugs = await getBlogPostSlugs();

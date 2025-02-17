@@ -75,7 +75,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h6: createHeading(6),
 
     a(props: any) {
-      return <Link {...props} target='_blank' />;
+      return <Link {...props} target='_blank' className='hover:opacity-60' />;
     },
 
     code({ children }: { children: string | React.ReactNode }) {
@@ -129,7 +129,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 
       return (
         <div>
-          <CodeSnippetHeader lang={filename || lang} code={filteredCode} />
+          <CodeSnippetHeader title={filename || lang} code={filteredCode} />
           <CodeSnippet code={code} lang={lang} />
         </div>
       );

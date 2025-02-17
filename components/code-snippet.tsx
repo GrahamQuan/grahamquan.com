@@ -24,6 +24,7 @@ export default async function CodeSnippet({ code, lang = 'bash' }: { code: strin
         classActivePre: '[:where(&_.line)]:pl-4',
       }),
       transformerNotationHighlight({
+        matchAlgorithm: 'v3',
         classActiveLine:
           // '-mx-5 pl-[calc(var(--spacing)*5+2px)] border-l-2 pr-20 border-sky-500 bg-gradient-to-r from-sky-300/15 via-sky-300/5 via-[75%] to-transparent',
           '-mx-5 pl-[calc(var(--spacing)*5+2px)] border-l-2 pr-20 border-(--color-foreground)/75 bg-gradient-to-r from-(--color-foreground)/15 via-(--color-foreground)/5 via-[75%] to-transparent',

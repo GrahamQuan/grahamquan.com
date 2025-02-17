@@ -5,7 +5,7 @@ import { Check, Copy } from 'lucide-react';
 
 import useCopy from '@/hooks/use-copy';
 
-export default function CodeSnippetHeader({ lang, code }: { lang: string; code: string }) {
+export default function CodeSnippetHeader({ title, code }: { title: string; code: string }) {
   const { isCopied, copy } = useCopy();
 
   const handleCopy = useCallback(() => {
@@ -15,7 +15,7 @@ export default function CodeSnippetHeader({ lang, code }: { lang: string; code: 
   return (
     // <div className='flex h-36 items-center justify-between rounded-t bg-gray-950/5 p-12 dark:bg-white/10'>
     <div className='flex h-36 items-center justify-between rounded-t-sm bg-black/10 p-12 dark:bg-white/10'>
-      <div>{lang}</div>
+      <div>{title}</div>
       {isCopied ? (
         <Check className='size-16' />
       ) : (

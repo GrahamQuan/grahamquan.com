@@ -13,8 +13,8 @@ export default function GridContainer({
   let bottomDirection = '';
   switch (direction) {
     case 'full':
-      topDirection = 'before:-left-[100vw]';
-      bottomDirection = 'after:-left-[100vw]';
+      topDirection = 'before:-left-[calc(100vw+50%+64px+2px)]';
+      bottomDirection = 'after:-left-[calc(100vw+50%+64px+2px)]';
       break;
     case 'to-left':
       topDirection = 'before:right-0';
