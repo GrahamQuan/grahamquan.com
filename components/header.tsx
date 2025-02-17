@@ -12,13 +12,14 @@ import GridLine from './grid-line';
 
 function HeaderItem({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
   const pathname = usePathname();
+  const withoutTrailingSlash = pathname.replace(/\/$/, '');
 
   return (
     <Link
       href={href}
       className={cn(
         'border-color relative flex h-full items-center justify-center border-l px-12 opacity-60 first:border-l-0 hover:opacity-100',
-        pathname.includes(href) && 'opacity-100',
+        withoutTrailingSlash === href && 'opacity-100',
         className,
       )}
     >
@@ -26,7 +27,7 @@ function HeaderItem({ href, children, className }: { href: string; children: Rea
       <div
         className={cn(
           'absolute bottom-0 left-1/2 h-px w-[calc(100%-12px)] -translate-x-1/2 rounded-full bg-black opacity-0 transition-all dark:bg-white',
-          pathname.includes(href) && 'opacity-100',
+          withoutTrailingSlash === href && 'opacity-100',
         )}
       />
     </Link>

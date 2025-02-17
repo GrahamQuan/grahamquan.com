@@ -119,9 +119,17 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         code = code.slice(0, -1);
       }
 
+      // Remove comments starting with `// [!code`
+      let filteredCode = code
+        .replace(/^```ts$/, '')
+        .replace(/^```$/, '')
+        .replace(/\[!code[^\]]*\]/g, '')
+        .replace(/\/\/\s*\[!code[^\n]*/g, '')
+        .replace(/\/\/\s*$/gm, '');
+
       return (
         <div>
-          <CodeSnippetHeader lang={filename || lang} code={code} />
+          <CodeSnippetHeader lang={filename || lang} code={filteredCode} />
           <CodeSnippet code={code} lang={lang} />
         </div>
       );

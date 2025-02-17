@@ -10,10 +10,10 @@ export async function getBlogPostBySlug(slug: string): Promise<{
   Component: React.FC;
   metadata: {
     title: string;
+    description: string;
     date: string;
     excerpt: React.ReactElement;
     // authors: Author[];
-    description: string;
     image?: {
       src: string;
     };
@@ -35,7 +35,7 @@ export async function getBlogPostBySlug(slug: string): Promise<{
     return {
       Component: module.default,
       metadata: {
-        authors: [],
+        // authors: [],
         ...module.metadata,
       },
       slug,
