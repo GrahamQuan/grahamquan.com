@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
-/* @plugin '../tailwind-custom-plugin.js'; */
+@plugin 'tailwindcss-animate';
 
 :root {
   --font-inter: var(--font-inter);
@@ -71,4 +71,39 @@ body {
   color: var(--color-foreground);
   background: var(--color-background);
   font-family: var(--font-inter);
+}
+
+[data-rmiz-modal-overlay='visible'] {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(2px);
+}
+
+@keyframes zoom-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+.animate-zoom-in {
+  animation: zoom-in 0.2s ease-out forwards;
+}
+
+.animate-zoom-out {
+  animation: zoom-out 0.2s ease-in forwards;
 }

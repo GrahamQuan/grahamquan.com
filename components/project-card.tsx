@@ -3,7 +3,10 @@ import { SquareArrowOutUpRight } from 'lucide-react';
 
 import type { Project } from '@/lib/constants';
 
-import InViewPlayVideo from './video/inview-play-video';
+import ZoomImage from './image/zoom-image';
+import ZoomVideo from './video/zoom-video';
+
+// import InViewPlayVideo from './video/inview-play-video';
 
 function LinkBtn({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -20,12 +23,20 @@ function LinkBtn({ href, children }: { href: string; children: React.ReactNode }
 
 export default function ProjectCard({ title, description, href, githubLink, imgSrc, videoSrc }: Project) {
   return (
-    <div className='flex w-full flex-col gap-4 p-12'>
+    <div className='flex w-full flex-col gap-8 bg-(--color-background) p-18'>
       <div className='relative aspect-video w-full overflow-hidden rounded-lg'>
         {videoSrc ? (
-          <InViewPlayVideo src={videoSrc} preload='metadata' className='size-full rounded-[inherit]' />
+          // <InViewPlayVideo src={videoSrc} preload='metadata' className='size-full rounded-[inherit]' />
+          <ZoomVideo src={videoSrc} className='size-full rounded-[inherit]' />
         ) : (
-          <img src={imgSrc} alt={title} className='size-full rounded-[inherit]' />
+          <ZoomImage
+            src={imgSrc}
+            alt={title}
+            loading='lazy'
+            decoding='async'
+            fetchPriority='low'
+            className='size-full rounded-[inherit]'
+          />
         )}
       </div>
       <div className='flex flex-col gap-8'>
@@ -34,9 +45,9 @@ export default function ProjectCard({ title, description, href, githubLink, imgS
           {description}
         </p>
       </div>
-      <div className='flex items-center justify-end gap-8'>
-        <LinkBtn href={href}>View</LinkBtn>
-        <LinkBtn href={githubLink}>GitHub</LinkBtn>
+      <div className='mt-auto flex items-center justify-end gap-8'>
+        {href && <LinkBtn href={href}>View</LinkBtn>}
+        {githubLink && <LinkBtn href={githubLink}>GitHub</LinkBtn>}
       </div>
     </div>
   );
