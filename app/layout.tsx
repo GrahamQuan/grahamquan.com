@@ -38,10 +38,12 @@ export default function RootLayout({
       <head>
         <ThemeScript />
       </head>
-      <body className={`${inter.variable} font-inter border-color flex min-h-dvh w-dvw flex-col border-x antialiased`}>
+      <body
+        className={`${inter.variable} font-inter border-color relative flex min-h-dvh w-dvw flex-col border-x antialiased`}
+      >
         <ThemeProvider>
           <Header />
-          <div className='mdx:grid-cols-[auto_2rem_56rem_2rem_auto] mdx:grid-rows-[1fr_auto] grid grid-cols-1'>
+          <div className='mdx:grid-cols-[auto_2rem_56rem_2rem_auto] mdx:grid-rows-[1fr_auto] grid grid-cols-[auto_2rem_375px_2rem_auto]'>
             <div className='border-color col-start-2 row-span-1 border-l' />
             <div className='border-color mx-auto min-h-full w-full max-w-(--size-pc) border-x'>
               <main className='w-full'>

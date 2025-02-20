@@ -9,6 +9,7 @@ import { NavigationList } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
 import GridLine from './grid-line';
+import MenuButton from './menu-button';
 
 function HeaderItem({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
   const pathname = usePathname();
@@ -42,7 +43,8 @@ export default function Header() {
         {/* <Plus className='absolute -bottom-12 -left-12 -translate-x-0.5 opacity-70' strokeWidth={1} /> */}
         <div className='absolute top-0 -left-33 h-full w-px bg-gray-950/5 dark:bg-white/10' />
         <Link href='/'>Home</Link>
-        <div className='border-color ml-auto flex h-full border-l'>
+        <MenuButton />
+        <div className='border-color mdx:flex ml-auto hidden h-full border-l'>
           {NavigationList.map((el) => (
             <HeaderItem key={el.href} href={el.href}>
               {el.title}
