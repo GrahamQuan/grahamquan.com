@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { AUTHOR, NavigationList, SocialList } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
-import GridContainer from './grid-container';
+import GridContainer from './grid-layout/grid-container';
 import ThemeToggle from './theme-toggle';
 
 function FooterItem({

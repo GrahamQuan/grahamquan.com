@@ -7,8 +7,8 @@ import { ArrowUpLeft, Plus } from 'lucide-react';
 
 import { getBlogPostBySlug, getBlogPostSlugs } from '@/lib/blog-utils';
 import { formatDate } from '@/lib/time-utils';
-import GridContainer from '@/components/grid-container';
-import GridSmallBackground from '@/components/grid-small-background';
+import GridContainer from '@/components/grid-layout/grid-container';
+import GridSmallBackground from '@/components/grid-layout/grid-small-background';
 
 type Props = {
   params: Promise<{

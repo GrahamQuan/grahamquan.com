@@ -2,8 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import type { MDXComponents } from 'mdx/types';
 
-import CodeSnippet from './components/code-snippet';
-import CodeSnippetHeader from './components/code-snippet-header';
+import CodeSnippet from './components/code/code-snippet';
+import CodeSnippetHeader from './components/code/code-snippet-header';
 
 function getTextContent(node: React.ReactNode): string {
   if (typeof node === 'string' || typeof node === 'number') {

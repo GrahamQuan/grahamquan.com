@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 import { NavigationList } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
-import GridLine from './grid-line';
+import GridLine from './grid-layout/grid-line';
 import MenuButton from './menu-button';
 
 function HeaderItem({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
