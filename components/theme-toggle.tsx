@@ -63,7 +63,7 @@ export default function ThemeToggle() {
   };
 
   return (
-    <div className='border-color relative z-0 inline-grid grid-cols-3 gap-1 rounded-full border p-2'>
+    <div className='border-color relative z-0 inline-grid w-fit grid-cols-3 gap-1 rounded-full border p-2'>
       {ThemesList.map((el) => (
         <button
           key={el.type}

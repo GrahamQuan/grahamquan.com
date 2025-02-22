@@ -14,7 +14,7 @@ export default async function Page() {
   return (
     <div className='flex flex-col gap-12 p-24'>
       <h1 className='px-12 text-4xl font-bold'>Blog page</h1>
-      <ul className='grid grid-cols-2 gap-px bg-black/15 dark:bg-white/5'>
+      <ul className='mdx:grid-cols-2 grid grid-cols-1 gap-px bg-black/15 dark:bg-white/5'>
         {blogs.map((blog) => (
           <li key={blog.slug} className='group/link grid grid-rows-subgrid bg-(--color-background) px-12 py-24'>
             <Link href={`/blog/${blog.slug}`}>
