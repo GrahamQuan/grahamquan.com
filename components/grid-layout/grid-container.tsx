@@ -13,8 +13,8 @@ export default function GridContainer({
   let bottomDirection = '';
   switch (direction) {
     case 'full':
-      topDirection = 'before:-left-[calc(100vw+50%+64px+2px)]';
-      bottomDirection = 'after:-left-[calc(100vw+50%+64px+2px)]';
+      topDirection = 'before:-left-[13px] mdx:before:-left-[calc((100vw-32px-869px+8px)/2)]';
+      bottomDirection = 'after:-left-[13px] mdx:after:-left-[calc((100vw-32px-869px+8px)/2)]';
       break;
     case 'to-left':
       topDirection = 'before:right-0';
@@ -31,9 +31,11 @@ export default function GridContainer({
       className={clsx(
         className,
         'relative',
-        'before:absolute before:top-0 before:h-px before:w-[200vw] before:bg-gray-950/5 dark:before:bg-white/10',
+        // 'before:absolute before:top-0 before:h-px before:w-[200vw] before:bg-gray-950/5 dark:before:bg-white/10',
+        'before:absolute before:top-0 before:h-px before:w-dvw before:bg-gray-950/5 dark:before:bg-white/10',
         topDirection,
-        'after:absolute after:bottom-0 after:h-px after:w-[200vw] after:bg-gray-950/5 dark:after:bg-white/10',
+        // 'after:absolute after:bottom-0 after:h-px after:w-[200vw] after:bg-gray-950/5 dark:after:bg-white/10',
+        'after:absolute after:bottom-0 after:h-px after:w-dvw after:bg-gray-950/5 dark:after:bg-white/10',
         bottomDirection,
       )}
     >

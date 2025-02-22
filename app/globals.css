@@ -8,6 +8,7 @@
   --font-inter: var(--font-inter);
   --color-background: hsl(0 0% 100%);
   --color-foreground: hsl(240 10% 3.9%);
+  --page-margin: 32px;
   color-scheme: light dark;
   --background: hsl(0 0% 100%);
   --foreground: hsl(0 0% 3.9%);
@@ -62,6 +63,12 @@
   --chart-3: hsl(30 80% 55%);
   --chart-4: hsl(280 65% 60%);
   --chart-5: hsl(340 75% 55%);
+}
+
+@media (min-width: 896px) {
+  :root {
+    --page-margin: 12px;
+  }
 }
 
 .light {

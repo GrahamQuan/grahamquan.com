@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ArrowUpLeft } from 'lucide-react';
 
 import { getBlogPostBySlug, getBlogPostSlugs, nonNullable } from '@/lib/blog-utils';
 import { formatDate } from '@/lib/time-utils';
@@ -18,7 +19,10 @@ export default async function Page() {
         {blogs.map((blog) => (
           <li key={blog.slug} className='group/link grid grid-rows-subgrid bg-(--color-background) px-12 py-24'>
             <Link href={`/blog/${blog.slug}`}>
-              <h2 className='text-lg font-bold group-hover/link:underline'>{blog.metadata.title}</h2>
+              <h2 className='text-lg font-bold group-hover/link:underline'>
+                <ArrowUpLeft className='mr-6 inline size-16 shrink-0' />
+                {blog.metadata.title}
+              </h2>
               <time
                 dateTime={blog.metadata.date}
                 className='rounded bg-black/10 px-6 py-2 text-xs opacity-80 dark:bg-white/10'

@@ -34,17 +34,17 @@ export default function RootLayout({
         <ThemeScript />
       </head>
       <body
-        className={`${inter.variable} font-inter border-color relative flex min-h-dvh w-dvw flex-col border-x antialiased`}
+        className={`${inter.variable} font-inter border-color mdx:border-x relative flex min-h-dvh w-dvw max-w-screen flex-col overflow-x-hidden antialiased`}
       >
         <ThemeProvider>
           <Header />
-          <div className='mdx:grid-cols-[auto_2rem_56rem_2rem_auto] mdx:grid-rows-[1fr_auto] grid grid-cols-[auto_2rem_375px_2rem_auto]'>
-            <div className='border-color col-start-2 row-span-1 border-l' />
-            <div className='border-color mx-auto min-h-full w-full max-w-(--size-pc) border-x'>
+          <div className='mdx:grid-cols-[auto_2rem_56rem_2rem_auto] grid grid-cols-[12px_auto_12px] grid-rows-[1fr_auto]'>
+            <div className='border-color mdx:block mdx:border-l mdx:col-start-2 col-start-0 row-span-1' />
+            <div className='border-color mx-auto min-h-full w-full max-w-4xl border-x'>
               <main className='w-full'>{children}</main>
               <Footer />
             </div>
-            <div className='border-color col-start-4 row-span-1 border-r' />
+            <div className='border-color mdx:block mdx:border-r mdx:col-start-4 col-start-2 row-span-1' />
           </div>
         </ThemeProvider>
       </body>

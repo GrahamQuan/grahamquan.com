@@ -39,7 +39,7 @@ function NavList({
   );
 }
 
-export default function MenuButton() {
+export default function MobileMenu() {
   const [open, setOpen] = useState(false);
 
   const handleClose = useCallback(() => {
@@ -51,11 +51,15 @@ export default function MenuButton() {
       <DrawerTrigger asChild>
         <button className='mdx:hidden'>{open ? <X /> : <Menu />}</button>
       </DrawerTrigger>
-      <DrawerContent className='h-[40dvh] px-12' barClassName='h-8 mt-8'>
+      <DrawerContent className='h-[50dvh] px-24' barClassName='h-8 mt-8'>
         <DrawerHeader>
           {/* <DrawerTitle>Menu</DrawerTitle> */}
           <DrawerDescription className='flex flex-col gap-16'>
-            <NavList title='Navigation' list={NavigationList} onAfterClick={handleClose} />
+            <NavList
+              title='Navigation'
+              list={[{ title: 'Home', href: '/' }, ...NavigationList]}
+              onAfterClick={handleClose}
+            />
             <div className='h-px w-full bg-black/10 dark:bg-white/5' />
             <div className='flex items-center justify-between'>
               <div className='text-lg font-semibold'>Theme</div>

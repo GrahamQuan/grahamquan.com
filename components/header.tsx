@@ -7,7 +7,7 @@ import { NavigationList } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
 import GridLine from './grid-layout/grid-line';
-import MenuButton from './menu-button';
+import MobileMenu from './mobile-menu';
 
 function HeaderItem({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
   const pathname = usePathname();
@@ -37,10 +37,10 @@ export default function Header() {
   return (
     <header className='sticky top-0 z-50 w-full backdrop-blur-md'>
       <GridLine />
-      <nav className='border-color mdx:pr-0 relative mx-auto flex h-64 max-w-4xl items-center justify-between gap-12 border-x pr-12 pl-12'>
-        <div className='mdx:block absolute top-0 -left-33 hidden h-full w-px bg-gray-950/5 dark:bg-white/10' />
+      <nav className='border-color mdx:border-x mdx:pr-0 mdx:pl-12 relative mx-auto flex h-64 max-w-4xl items-center justify-between gap-12 pr-24 pl-24'>
+        <div className='mdx:block mdx:-left-33 absolute top-0 left-12 h-full w-px bg-gray-950/5 dark:bg-white/10' />
         <Link href='/'>Home</Link>
-        <MenuButton />
+        <MobileMenu />
         <div className='border-color mdx:flex ml-auto hidden h-full border-l'>
           {NavigationList.map((el) => (
             <HeaderItem key={el.href} href={el.href}>
@@ -48,7 +48,7 @@ export default function Header() {
             </HeaderItem>
           ))}
         </div>
-        <div className='mdx:block absolute top-0 -right-33 hidden h-full w-px bg-gray-950/5 dark:bg-white/10' />
+        <div className='mdx:block mdx:-right-33 absolute top-0 right-12 h-full w-px bg-gray-950/5 dark:bg-white/10' />
       </nav>
       <GridLine />
     </header>
