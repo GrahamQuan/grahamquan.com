@@ -3,8 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-// import { Plus } from 'lucide-react';
-
 import { NavigationList } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
@@ -39,9 +37,8 @@ export default function Header() {
   return (
     <header className='sticky top-0 z-50 w-full backdrop-blur-md'>
       <GridLine />
-      <nav className='border-color relative mx-auto flex h-64 max-w-4xl items-center justify-between gap-12 border-x pl-12'>
-        {/* <Plus className='absolute -bottom-12 -left-12 -translate-x-0.5 opacity-70' strokeWidth={1} /> */}
-        <div className='absolute top-0 -left-33 h-full w-px bg-gray-950/5 dark:bg-white/10' />
+      <nav className='border-color mdx:pr-0 relative mx-auto flex h-64 max-w-4xl items-center justify-between gap-12 border-x pr-12 pl-12'>
+        <div className='mdx:block absolute top-0 -left-33 hidden h-full w-px bg-gray-950/5 dark:bg-white/10' />
         <Link href='/'>Home</Link>
         <MenuButton />
         <div className='border-color mdx:flex ml-auto hidden h-full border-l'>
@@ -51,7 +48,7 @@ export default function Header() {
             </HeaderItem>
           ))}
         </div>
-        <div className='absolute top-0 -right-33 h-full w-px bg-gray-950/5 dark:bg-white/10' />
+        <div className='mdx:block absolute top-0 -right-33 hidden h-full w-px bg-gray-950/5 dark:bg-white/10' />
       </nav>
       <GridLine />
     </header>

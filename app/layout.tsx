@@ -5,9 +5,7 @@ import './globals.css';
 
 import { GoogleAnalytics } from '@next/third-parties/google';
 
-// import Cane from '@/components/cane';
 import Footer from '@/components/footer';
-// import GridSmallBackground from '@/components/grid-small-background';
 import Header from '@/components/header';
 import ThemeScript from '@/components/scripts/theme-script';
 import { ThemeProvider } from '@/components/theme-toggle';
@@ -17,9 +15,6 @@ const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '700'],
 });
-
-// disable this when deploying to vercel
-// export const runtime = 'edge';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),
@@ -46,10 +41,7 @@ export default function RootLayout({
           <div className='mdx:grid-cols-[auto_2rem_56rem_2rem_auto] mdx:grid-rows-[1fr_auto] grid grid-cols-[auto_2rem_375px_2rem_auto]'>
             <div className='border-color col-start-2 row-span-1 border-l' />
             <div className='border-color mx-auto min-h-full w-full max-w-(--size-pc) border-x'>
-              <main className='w-full'>
-                {/* <GridSmallBackground className='p-12'>{children}</GridSmallBackground> */}
-                {children}
-              </main>
+              <main className='w-full'>{children}</main>
               <Footer />
             </div>
             <div className='border-color col-start-4 row-span-1 border-r' />

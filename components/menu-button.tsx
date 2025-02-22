@@ -49,7 +49,7 @@ export default function MenuButton() {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <button>{open ? <X /> : <Menu />}</button>
+        <button className='mdx:hidden'>{open ? <X /> : <Menu />}</button>
       </DrawerTrigger>
       <DrawerContent className='h-[40dvh] px-12' barClassName='h-8 mt-8'>
         <DrawerHeader>

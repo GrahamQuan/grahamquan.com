@@ -25,7 +25,9 @@ export default async function Page() {
               >
                 {formatDate(blog.metadata.date)}
               </time>
-              <p className='mt-4 text-sm opacity-70'>{blog.metadata.description}</p>
+              <p className='mt-4 line-clamp-5 text-sm opacity-70' title={blog.metadata.description}>
+                {blog.metadata.description}
+              </p>
             </Link>
           </li>
         ))}
