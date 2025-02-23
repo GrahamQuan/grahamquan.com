@@ -2,12 +2,7 @@
 
 import { ComponentProps, useEffect, useRef, useState } from 'react';
 
-export default function InViewPlayVideo({
-  src,
-  muted = true,
-  controlsList = 'nodownload',
-  ...props
-}: ComponentProps<'video'>) {
+export default function InViewPlayVideo({ src, muted = true, ...props }: ComponentProps<'video'>) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isInView, setIsInView] = useState(false);
 
@@ -50,5 +45,5 @@ export default function InViewPlayVideo({
     };
   }, [isInView, src, muted]);
 
-  return <video ref={videoRef} src={src} muted={muted} loop playsInline controlsList={controlsList} {...props} />;
+  return <video ref={videoRef} {...props} src={src} loop playsInline controlsList='nodownload' muted={muted} />;
 }

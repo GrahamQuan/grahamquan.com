@@ -6,8 +6,6 @@ import type { Project } from '@/lib/constants';
 import ZoomImage from './image/zoom-image';
 import ZoomVideo from './video/zoom-video';
 
-// import InViewPlayVideo from './video/inview-play-video';
-
 function LinkBtn({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <Link
@@ -24,10 +22,13 @@ function LinkBtn({ href, children }: { href: string; children: React.ReactNode }
 export default function ProjectCard({ title, description, href, githubLink, imgSrc, videoSrc }: Project) {
   return (
     <div className='flex w-full flex-col gap-8 bg-(--color-background) p-18'>
-      <div className='relative aspect-video w-full overflow-hidden rounded-lg'>
+      <div className='relative mb-12 aspect-video w-full rounded-lg p-12'>
+        <div className='absolute top-0 left-0 z-10 size-8 border-r border-b' />
+        <div className='absolute top-0 right-0 z-10 size-8 border-b border-l' />
+        <div className='absolute bottom-0 left-0 z-10 size-8 border-t border-r' />
+        <div className='absolute right-0 bottom-0 z-10 size-8 border-t border-l' />
         {videoSrc ? (
-          // <InViewPlayVideo src={videoSrc} preload='metadata' className='size-full rounded-[inherit]' />
-          <ZoomVideo src={videoSrc} className='size-full rounded-[inherit]' />
+          <ZoomVideo src={videoSrc} className='size-full border' />
         ) : (
           <ZoomImage
             src={imgSrc}
@@ -35,7 +36,7 @@ export default function ProjectCard({ title, description, href, githubLink, imgS
             loading='lazy'
             decoding='async'
             fetchPriority='low'
-            className='size-full rounded-[inherit]'
+            className='size-full border'
           />
         )}
       </div>
