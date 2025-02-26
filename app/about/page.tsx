@@ -1,23 +1,29 @@
-import { TechStack } from '@/lib/constants';
+// import { TechStack } from '@/lib/constants';
+import GridContent from '@/components/grid-layout/grid-content';
 
 export default function Page() {
   return (
     <div className='mx-auto flex max-w-4xl flex-col gap-12 p-12'>
       <h1 className='text-2xl font-bold'>About</h1>
-      <div className='flex flex-col gap-4'>
-        {TechStack.map((stack) => (
-          <div key={stack.title}>
-            <h2 className='text-lg font-bold'>{stack.title}</h2>
-            <ul className='list-disc pl-24'>
-              {stack.items.map((item) => (
-                <li key={item} className='opacity-60'>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+      <GridContent
+        list={[
+          {
+            title: '1 title',
+            description:
+              '1 description 1 description 1 description 1 description 1 description 1 description 1 description 1 description 1 description 1 description',
+          },
+          {
+            title: '2 title',
+            description:
+              '2 description 2 description 2 description 2 description 2 description 2 description 2 description 2 description 2 description 2 description',
+          },
+          {
+            title: '3 title',
+            description:
+              ' 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description 3 description',
+          },
+        ]}
+      />
     </div>
   );
 }

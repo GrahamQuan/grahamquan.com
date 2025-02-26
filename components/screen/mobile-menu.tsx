@@ -6,8 +6,8 @@ import { ChevronRight, Menu, X } from 'lucide-react';
 
 import { NavigationList } from '@/lib/constants';
 
-import ThemeToggle from './theme-toggle';
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTrigger } from './ui/drawer';
+import ThemeToggle from '../theme-toggle';
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTrigger } from '../ui/drawer';
 
 function NavList({
   title,
@@ -20,7 +20,7 @@ function NavList({
 }) {
   return (
     <div className='flex w-full flex-col gap-12'>
-      <div className='text-lg font-semibold'>{title}</div>
+      <div className='font-mono text-lg font-semibold'>{title}</div>
       <ul className='flex w-full flex-col gap-16'>
         {list.map((item) => (
           <li key={item.href} className='w-full'>
@@ -62,7 +62,7 @@ export default function MobileMenu() {
             />
             <div className='h-px w-full bg-black/10 dark:bg-white/5' />
             <div className='flex items-center justify-between'>
-              <div className='text-lg font-semibold'>Theme</div>
+              <div className='font-mono text-lg font-semibold'>Theme</div>
               <ThemeToggle />
             </div>
             <div className='h-px w-full bg-black/10 dark:bg-white/5' />

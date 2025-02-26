@@ -88,7 +88,7 @@ export default async function DocPage(props: Props) {
             </Link>
           </div>
           <GridContainer className='mdx:mb-32 px-12'>
-            <h1 className='mdx:text-4xl flex h-102 max-w-(--breakpoint-md) items-center text-[2.5rem]/10 font-bold tracking-tight text-pretty text-gray-950 [view-transition-name:blog-page] dark:text-gray-200'>
+            <h1 className='mdx:text-4xl flex min-h-80 max-w-(--breakpoint-md) items-center py-8 font-mono text-2xl font-bold tracking-tight text-pretty text-gray-950 [view-transition-name:blog-page] dark:text-gray-200'>
               {post.metadata.title}
             </h1>
           </GridContainer>

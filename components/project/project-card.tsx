@@ -3,8 +3,8 @@ import { SquareArrowOutUpRight } from 'lucide-react';
 
 import type { Project } from '@/lib/constants';
 
-import ZoomImage from './image/zoom-image';
-import ZoomVideo from './video/zoom-video';
+import ZoomImage from '../image/zoom-image';
+import ZoomVideo from '../video/zoom-video';
 
 function LinkBtn({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -23,12 +23,12 @@ export default function ProjectCard({ title, description, href, githubLink, imgS
   return (
     <div className='flex w-full flex-col gap-8 bg-(--color-background) p-18'>
       <div className='relative mb-12 aspect-video w-full rounded-lg p-12'>
-        <div className='absolute top-0 left-0 z-10 size-8 border-r border-b' />
-        <div className='absolute top-0 right-0 z-10 size-8 border-b border-l' />
-        <div className='absolute bottom-0 left-0 z-10 size-8 border-t border-r' />
-        <div className='absolute right-0 bottom-0 z-10 size-8 border-t border-l' />
+        <div className='border-color absolute top-0 left-0 z-10 size-8 border-r border-b' />
+        <div className='border-color absolute top-0 right-0 z-10 size-8 border-b border-l' />
+        <div className='border-color absolute bottom-0 left-0 z-10 size-8 border-t border-r' />
+        <div className='border-color absolute right-0 bottom-0 z-10 size-8 border-t border-l' />
         {videoSrc ? (
-          <ZoomVideo src={videoSrc} className='size-full border' />
+          <ZoomVideo src={videoSrc} className='border-color size-full border' />
         ) : (
           <ZoomImage
             src={imgSrc}
@@ -36,12 +36,12 @@ export default function ProjectCard({ title, description, href, githubLink, imgS
             loading='lazy'
             decoding='async'
             fetchPriority='low'
-            className='size-full border'
+            className='border-color size-full border'
           />
         )}
       </div>
       <div className='flex flex-col gap-8'>
-        <h3 className='truncate text-lg font-bold'>{title}</h3>
+        <h3 className='truncate font-mono text-lg font-bold'>{title}</h3>
         <p className='line-clamp-3 text-sm opacity-60' title={description}>
           {description}
         </p>

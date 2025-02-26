@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { NavigationList } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
-import GridLine from './grid-layout/grid-line';
+import GridLine from '../grid-layout/grid-line';
 import MobileMenu from './mobile-menu';
 
 function HeaderItem({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
@@ -25,7 +25,7 @@ function HeaderItem({ href, children, className }: { href: string; children: Rea
       {children}
       <div
         className={cn(
-          'absolute bottom-0 left-1/2 h-px w-[calc(100%-12px)] -translate-x-1/2 rounded-full bg-black opacity-0 transition-all dark:bg-white',
+          'absolute bottom-0 left-1/2 h-2 w-[calc(100%-12px)] -translate-x-1/2 rounded-full bg-black opacity-0 transition-all dark:bg-white',
           withoutTrailingSlash === href && 'opacity-100',
         )}
       />
@@ -38,7 +38,7 @@ export default function Header() {
     <header className='sticky top-0 z-50 w-full backdrop-blur-md'>
       <GridLine />
       <nav className='border-color mdx:border-x mdx:pr-0 mdx:pl-12 relative mx-auto flex h-64 max-w-4xl items-center justify-between gap-12 pr-24 pl-24'>
-        <div className='mdx:block mdx:-left-33 absolute top-0 left-12 h-full w-px bg-gray-950/5 dark:bg-white/10' />
+        <div className='mdx:block mdx:-left-33 bg-border-color absolute top-0 left-12 h-full w-px' />
         <Link href='/'>Home</Link>
         <MobileMenu />
         <div className='border-color mdx:flex ml-auto hidden h-full border-l'>
@@ -48,7 +48,7 @@ export default function Header() {
             </HeaderItem>
           ))}
         </div>
-        <div className='mdx:block mdx:-right-33 absolute top-0 right-12 h-full w-px bg-gray-950/5 dark:bg-white/10' />
+        <div className='mdx:block mdx:-right-33 bg-border-color absolute top-0 right-12 h-full w-px' />
       </nav>
       <GridLine />
     </header>

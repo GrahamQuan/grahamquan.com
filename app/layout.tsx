@@ -1,20 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-
-import './globals.css';
-
 import { GoogleAnalytics } from '@next/third-parties/google';
 
-import Footer from '@/components/footer';
-import Header from '@/components/header';
+import Footer from '@/components/screen/footer';
+import Header from '@/components/screen/header';
 import ThemeScript from '@/components/scripts/theme-script';
 import { ThemeProvider } from '@/components/theme-toggle';
 
-const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
-  weight: ['400', '700'],
-});
+import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),
@@ -33,9 +25,7 @@ export default function RootLayout({
       <head>
         <ThemeScript />
       </head>
-      <body
-        className={`${inter.variable} font-inter border-color mdx:border-x relative flex min-h-dvh w-dvw max-w-screen flex-col overflow-x-hidden antialiased`}
-      >
+      <body className='border-color mdx:border-x relative flex min-h-dvh w-dvw max-w-screen flex-col overflow-x-hidden antialiased'>
         <ThemeProvider>
           <Header />
           <div className='mdx:grid-cols-[auto_2rem_56rem_2rem_auto] grid grid-cols-[12px_auto_12px] grid-rows-[1fr_auto]'>

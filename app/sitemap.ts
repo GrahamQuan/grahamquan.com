@@ -11,7 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     {
-      url: process.env.NEXT_PUBLIC_BASE_URL as string,
+      url: process.env.NEXT_PUBLIC_BASE_URL as string, // home
       lastModified: new Date().toISOString(),
     },
     ...NavigationList.map((nav) => ({

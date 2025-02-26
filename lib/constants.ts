@@ -102,17 +102,32 @@ export const ProjectList: Project[] = [
 ];
 
 /* About page */
+// export const TechStack = [
+//   {
+//     title: 'Frontend',
+//     items: ['React v19', 'Next.js v15', 'Tailwind CSS v14'],
+//   },
+//   {
+//     title: 'Backend',
+//     items: ['Node.js', 'Express'],
+//   },
+//   {
+//     title: 'Database',
+//     items: ['PostgreSQL', 'Supabase'],
+//   },
+// ];
+
 export const TechStack = [
   {
-    title: 'Frontend',
-    items: ['React v19', 'Next.js v15', 'Tailwind CSS v14'],
+    title: 'A',
+    items: ['1', '2', '3'],
   },
   {
-    title: 'Backend',
-    items: ['Node.js', 'Express'],
+    title: 'B',
+    items: ['4', '5', '6'],
   },
   {
-    title: 'Database',
-    items: ['PostgreSQL', 'Supabase'],
+    title: 'C',
+    items: ['7', '8', '9', '10'],
   },
 ];
