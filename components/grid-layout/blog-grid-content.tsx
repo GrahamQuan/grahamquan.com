@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import Link from 'next/link';
-import { ArrowUpLeft, Plus } from 'lucide-react';
+import { ArrowUpLeft, Pin, Plus } from 'lucide-react';
 
 import type { getBlogPostBySlug } from '@/lib/blog-utils';
 import { formatDate } from '@/lib/time-utils';
@@ -24,7 +24,12 @@ export default function BlogGridContent({
             </time>
             {idx !== 0 && <Plus className='absolute -top-12 -right-12 size-24' strokeWidth={1} />}
           </div>
-          <Link href={`/blog/${item.slug}`} className='group/link col-span-12 bg-(--color-background) p-24'>
+          <Link href={`/blog/${item.slug}`} className='group/link relative col-span-12 bg-(--color-background) p-24'>
+            {item.metadata.pin && (
+              <div className='absolute top-12 right-0 size-24'>
+                <Pin className='size-16' strokeWidth={1} />
+              </div>
+            )}
             <h2 className='font-mono text-lg font-bold group-hover/link:underline'>
               <ArrowUpLeft className='mr-6 inline size-16 shrink-0' />
               {item.metadata.title}

@@ -18,6 +18,7 @@ export async function getBlogPostBySlug(slug: string): Promise<{
       src: string;
     };
     private?: boolean;
+    pin?: boolean;
   };
   slug: string;
 } | null> {
@@ -47,7 +48,7 @@ export async function getBlogPostBySlug(slug: string): Promise<{
 }
 
 export async function getBlogPostSlugs(): Promise<string[]> {
-  let posts: { slug: string; date: number }[] = [];
+  let posts: { slug: string; date: number; pin: boolean; private: boolean }[] = [];
 
   let folders = await fs.readdir(path.join(__dirname, '../__blog__'));
 
@@ -61,6 +62,8 @@ export async function getBlogPostSlugs(): Promise<string[]> {
         posts.push({
           slug: post.slug,
           date: new Date(post.metadata.date).getTime(),
+          pin: !!post.metadata.pin,
+          private: !!post.metadata.private,
         });
       } catch (e) {
         console.error(e);
@@ -68,8 +71,14 @@ export async function getBlogPostSlugs(): Promise<string[]> {
     }),
   );
 
+  // filter by private
+  posts = posts.filter((post) => !post.private);
+
   // sort by date
   posts.sort((a, b) => b.date - a.date);
+
+  // sort by pin
+  posts.sort((a, b) => Number(b.pin) - Number(a.pin));
 
   return posts.map((post) => post.slug);
 }
