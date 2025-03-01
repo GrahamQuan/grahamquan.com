@@ -39,7 +39,9 @@ export default function Header() {
       <GridLine />
       <nav className='border-color mdx:border-x mdx:pr-0 mdx:pl-12 relative mx-auto flex h-64 max-w-4xl items-center justify-between gap-12 pr-24 pl-24'>
         <div className='mdx:block mdx:-left-33 bg-border-color absolute top-0 left-12 h-full w-px' />
-        <Link href='/'>Home</Link>
+        <Link href='/' className='hover:opacity-60'>
+          Home
+        </Link>
         <MobileMenu />
         <div className='border-color mdx:flex ml-auto hidden h-full border-l'>
           {NavigationList.map((el) => (

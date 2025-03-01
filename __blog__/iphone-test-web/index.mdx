@@ -1,0 +1,112 @@
+export const metadata = {
+  title: "iPhone test web",
+  description: `This is a long and descriptive description for testing purposes in the year 2025 on February 14th. It is important to make the text long and detailed to ensure it is properly tested and displayed on the website. Please do not remove this description as it is crucial for the testing process.`,
+  date: "2025-02-14T15:00:00.000Z",
+  keywords: ["nextjs", "cloudflare", "pages"],
+};
+
+## 0. Add eruda console to project
+- install
+```
+npm i eruda
+```
+- `ErudaDebugger.tsx`
+```tsx
+// [!code filename:components/ErudaDebugger.tsx]
+'use client';
+
+import { useEffect } from 'react';
+
+export default function ErudaDebugger() {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // only on mobile
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        console.log('Mobile detacted，load [Eruda] DevTools');
+        import('eruda').then(({ default: eruda }) => {
+          eruda.init({
+            tool: ['console', 'elements', 'network', 'resources', 'info'],
+            useShadowDom: true,
+            autoScale: true,
+            defaults: {
+              displaySize: 80,
+              transparency: 0.9,
+              theme: 'Dark'
+            }
+          });
+        }).catch(err => {
+          console.error('Eruda failed:', err);
+        });
+      }
+    }
+  }, []);
+
+  return null;
+}
+```
+- use
+```tsx
+// [!code filename:app/layout.tsx]
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html>
+      <body>
+	     {children}
+	     {process.env.NODE_ENV === 'development' && <ErudaDebugger />}
+      </body>
+    </html>
+  );
+}
+```
+
+## 1. Check IP Address
+
+**Windows:**
+```
+ipconfig
+```
+
+**Mac:**
+```
+ipconfig getifaddr en0
+```
+
+**Linux:**
+```
+ip addr
+```
+
+## 2. run dev 
+
+> change 0.0.0.0 to your real ip
+
+next.js
+
+```bash
+npx next dev -H 0.0.0.0 -p 3000
+```
+
+vite
+```
+npx vite --host 0.0.0.0 --port 3000
+```
+
+## 3. check you Wi-Fi 
+
+- Ensure that your iPhone and development computer are connected to `the same Wi-Fi network`.
+- Try pinging your iPhone from your development computer, or ping your development computer from another device.
+- Check if your computer's firewall is enabled; you might need to allow inbound connections on port 3000.
+
+## 4. Visit you website
+> change 0.0.0.0 to your real ip
+
+```
+http://0.0.0.0:3000
+```
+

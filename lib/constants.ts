@@ -1,4 +1,5 @@
 export const AUTHOR = 'Graham Quan';
+export const UseMarkdownLaTeX: boolean = true;
 
 /* header & footer  */
 export const NavigationList = [
@@ -102,32 +103,49 @@ export const ProjectList: Project[] = [
 ];
 
 /* About page */
-// export const TechStack = [
-//   {
-//     title: 'Frontend',
-//     items: ['React v19', 'Next.js v15', 'Tailwind CSS v14'],
-//   },
-//   {
-//     title: 'Backend',
-//     items: ['Node.js', 'Express'],
-//   },
-//   {
-//     title: 'Database',
-//     items: ['PostgreSQL', 'Supabase'],
-//   },
-// ];
-
 export const TechStack = [
   {
-    title: 'A',
-    items: ['1', '2', '3'],
+    title: 'Frontend',
+    keywords: [
+      {
+        title: 'React v19',
+        keywords: ['react-hook-form', 'Zod', 'useSwr', 'use-query'],
+      },
+      {
+        title: 'Next.js v15',
+        keywords: ['app router', 'server actions', 'use cache', 'next-auth'],
+      },
+      {
+        title: 'UI framework',
+        keywords: ['ShadcnUI', 'Ant Design'],
+      },
+      {
+        title: 'Bundler',
+        keywords: ['webpack', 'vite', 'tsup'],
+      },
+      'TypeScript',
+      'Tailwind CSS v4',
+      'React Router v7',
+    ],
   },
   {
-    title: 'B',
-    items: ['4', '5', '6'],
+    title: 'Backend',
+    keywords: ['Node.js', 'Express', 'Hono', 'Drizzle ORM'],
   },
   {
-    title: 'C',
-    items: ['7', '8', '9', '10'],
+    title: 'Test',
+    keywords: ['Vitest', 'React Testing Library', 'Playwright'],
+  },
+  {
+    title: 'Database',
+    keywords: ['PostgreSQL', 'Redis', 'Supabase'],
+  },
+  {
+    title: 'Cloud/Serverless',
+    keywords: ['Cloudflare', 'Vercel'],
+  },
+  {
+    title: 'DevOps',
+    keywords: ['Docker', 'CI/CD', 'Git', 'GitHub Actions'],
   },
 ];

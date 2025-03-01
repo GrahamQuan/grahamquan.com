@@ -1,44 +1,14 @@
-import Link from 'next/link';
-import { ArrowUpLeft } from 'lucide-react';
-
 import { getBlogPostBySlug, getBlogPostSlugs, nonNullable } from '@/lib/blog-utils';
-import { formatDate } from '@/lib/time-utils';
 import BlogGridContent from '@/components/grid-layout/blog-grid-content';
 
 export default async function Page() {
   let slugs = await getBlogPostSlugs();
-  let blogs = (await Promise.all(slugs.map(getBlogPostBySlug)))
-    .filter(nonNullable)
-    .filter((post) => !post.metadata.private);
-
-  // const isOddNum = blogs.length % 2 === 1;
+  let blogs = (await Promise.all(slugs.map(getBlogPostBySlug))).filter(nonNullable);
 
   return (
     <div className='flex flex-col gap-12 p-24'>
       <h1 className='px-12 text-4xl font-bold'>Blog page</h1>
       <BlogGridContent list={blogs} />
-      {/* <ul className='mdx:grid-cols-2 grid grid-cols-1 gap-px bg-black/15 dark:bg-white/5'>
-        {blogs.map((blog) => (
-          <li key={blog.slug} className='group/link grid grid-rows-subgrid bg-(--color-background) px-12 py-24'>
-            <Link href={`/blog/${blog.slug}`}>
-              <h2 className='font-mono text-lg font-bold group-hover/link:underline'>
-                <ArrowUpLeft className='mr-6 inline size-16 shrink-0' />
-                {blog.metadata.title}
-              </h2>
-              <time
-                dateTime={blog.metadata.date}
-                className='rounded bg-black/10 px-6 py-2 font-mono text-xs opacity-80 dark:bg-white/10'
-              >
-                {formatDate(blog.metadata.date)}
-              </time>
-              <p className='mt-4 line-clamp-5 text-sm opacity-70' title={blog.metadata.description}>
-                {blog.metadata.description}
-              </p>
-            </Link>
-          </li>
-        ))}
-        {isOddNum && <li className='bg-(--color-background)'></li>}
-      </ul> */}
     </div>
   );
 }

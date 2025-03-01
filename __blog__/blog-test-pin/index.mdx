@@ -1,7 +1,8 @@
 export const metadata = {
-  title: 'Blog Test Title',
+  title: 'Blog Test Pin',
   description: 'for testing',
   date: '2022-05-27T15:00:00.000Z',
+  pin: true,
 };
 
 ## blog-test : host a `nextjs` app on `cloudflare pages`
@@ -62,6 +63,38 @@ NEXT_PUBLIC_SITE_URL='http://localhost:8788'
 
 ```bash
 process.env.API_KEY
+```
+
+## markdown content
+
+```md
+# How to Cook Rice
+
+Rice is a staple food in many cultures around the world. Cooking rice can be a simple process, but it requires some basic steps to ensure it turns out fluffy and delicious. Here's a step-by-step guide on how to cook rice:
+
+### Step 1: Rinse the Rice
+
+Rinse the rice in a fine mesh strainer under cold running water for about 30 seconds. This helps remove any impurities and excess starch, resulting in better-textured rice.
+
+### Step 2: Use the Right Ratio
+
+Use a 1:1.5 to 1:2 ratio of water to rice. For example, if you're using 1 cup of rice, use 1.5 to 2 cups of water. Adjust the ratio based on the type of rice you're using and your personal preference.
+
+### Step 3: Cook the Rice
+
+In a medium saucepan, combine the rinsed rice and water. Bring the water to a boil over high heat. Once boiling, reduce the heat to low, cover the saucepan with a tight-fitting lid, and simmer for 15-20 minutes or until the water is absorbed and the rice is cooked.
+
+### Step 4: Let it Rest
+
+Once the rice is cooked, turn off the heat and let it rest, covered, for 5 minutes. This allows the rice to steam and become fluffy.
+
+### Step 5: Serve
+
+After 5 minutes, remove the lid and fluff the rice with a fork. Your perfectly cooked rice is now ready to be served alongside your favorite dishes.
+
+Remember, practice makes perfect, so don't be discouraged if your first batch of cooked rice doesn't turn out exactly as you hoped. Keep trying, and you'll soon become a rice-cooking pro!
+
+## [!code filename:.env.local]
 ```
 
 ## bug: cant set response headers
