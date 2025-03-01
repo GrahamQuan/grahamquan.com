@@ -7,7 +7,7 @@ export default async function Page() {
 
   return (
     <div className='flex flex-col gap-12 p-24'>
-      <h1 className='px-12 text-4xl font-bold'>Blog page</h1>
+      <h1 className='px-12 text-2xl font-bold'>Blog page</h1>
       <BlogGridContent list={blogs} />
     </div>
   );

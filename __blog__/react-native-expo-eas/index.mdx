@@ -1,0 +1,101 @@
+export const metadata = {
+  title: "Deploy react native with Expo project to Expo host",
+  date: "2023-09-05",
+  description: "Learn React Native Development with Expo 49: Effortless Deployment to Expo Host and Cloud Using eas-cli",
+  keywords: ["React Native", "Expo", "Development", "eas-cli"],
+};
+
+## Make sure install eas CLI globally
+
+### (1) When you try `expo publish` to push your project to Expo, and it'll show this
+
+```
+The global expo-cli package has been deprecated.                            │
+│                                                                           │
+│   The new Expo CLI is now bundled in your project in the expo package.    │
+│   Learn more: https://blog.expo.dev/the-new-expo-cli-f4250d8e3421.        │
+│                                                                           │
+│   To use the local CLI instead (recommended in SDK 46 and higher), run:   │
+│   › npx expo <command>
+```
+
+Solution is to install eas-cli, I am using eas-cli/4.1.2 More docs here
+[EAS Submit - Expo Documentation](https://docs.expo.dev/submit/introduction/)
+
+```sh
+npm install --global eas-cli
+```
+
+### (2) Init you project with eas CLI
+
+XXX-YYY-ZZZ is your EAS projectId, You can find or create `EAS projectId` on [Dashboard — Expo](https://expo.dev/)
+
+```sh
+eas init --id XXX-YYY-ZZZ
+```
+
+## Eas-Cli add `app.json` to your project automatically
+
+```json
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "3a457bfe-e1c9-49e8-8b6e-7f6fe54ce492"
+      }
+    },
+    "owner": "grahamquan"
+  }
+}
+```
+
+## Publish to Expo host
+
+### (1) You need to login first
+
+```sh
+eas login
+```
+
+### (2) publish to Expo host
+
+```sh
+eas update --branch [branch] --message [message]
+```
+
+Your `app.json` will update like this
+
+```json
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "3a457bfe-e1c9-49e8-8b6e-7f6fe54ce492"
+      }
+    },
+    "owner": "grahamquan",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3a457bfe-e1c9-49e8-8b6e-7f6fe54ce492"
+    },
+    "android": {},
+    "ios": {}
+  }
+}
+```
+
+## Finally
+
+1. Insall `Expo Go` app on your phone
+2. Open expo.dev website find your project
+   1. Your-project
+   2. Overview
+   3. Update
+   4. Choose your phone system ( preview button to show QR code )
+3. Use your phone scan the QR code
+
+PS: If your phone scan different system QR code, the `Expo Go` app might crash
+
+welcome to star :) [demo-github](https://github.com/GrahamQuan/rn-jobs-app)

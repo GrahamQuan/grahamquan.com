@@ -12,6 +12,7 @@ export async function getBlogPostBySlug(slug: string): Promise<{
     title: string;
     description: string;
     date: string;
+    keywords?: string[];
     excerpt: React.ReactElement;
     // authors: Author[];
     image?: {

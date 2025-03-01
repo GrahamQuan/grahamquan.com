@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-// import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next/types';
 import { ArrowUpLeft, Plus } from 'lucide-react';
@@ -33,29 +32,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),
     title: post.metadata.title,
     description: post.metadata.description,
-    // openGraph: {
-    //   title: post.metadata.title,
-    //   description: post.metadata.description,
-    //   type: 'article',
-    //   url: `/blog/${params.slug}`,
-    //   images: [
-    //     {
-    //       url: post.metadata.image ? post.metadata.image.src : `/api/og?path=/blog/${params.slug}`,
-    //     },
-    //   ],
-    // },
-    // twitter: {
-    //   card: 'summary_large_image',
-    //   title: post.metadata.title,
-    //   description: post.metadata.description,
-    //   images: [
-    //     {
-    //       url: post.metadata.image ? post.metadata.image.src : `/api/og?path=/blog/${params.slug}`,
-    //     },
-    //   ],
-    //   site: '@tailwindcss',
-    //   creator: '@tailwindcss',
-    // },
+    keywords: post.metadata.keywords,
   };
 }
 

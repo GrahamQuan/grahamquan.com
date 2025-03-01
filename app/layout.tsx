@@ -8,11 +8,24 @@ import { ThemeProvider } from '@/components/theme-toggle';
 
 import './globals.css';
 
+import CloudflareAnalyticsScript from '@/components/scripts/cloudflare-analytics-script';
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),
   title: 'Graham Quan Blog',
-  description: 'Next.js | TailwindCSS | TypeScript | React | Blog',
-  keywords: ['Next.js', 'TailwindCSS', 'TypeScript', 'React', 'Blog'],
+  description: 'Next.js | TailwindCSS | TypeScript | React | Blog | node | express | vite | react-native | expo',
+  keywords: [
+    'Next.js',
+    'TailwindCSS',
+    'TypeScript',
+    'React',
+    'Blog',
+    'node',
+    'express',
+    'vite',
+    'react-native',
+    'expo',
+  ],
 };
 
 export default function RootLayout({
@@ -24,6 +37,8 @@ export default function RootLayout({
     <html lang='en' suppressHydrationWarning>
       <head>
         <ThemeScript />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID as string} />
+        <CloudflareAnalyticsScript />
       </head>
       <body className='border-color mdx:border-x relative flex min-h-dvh w-dvw max-w-screen flex-col overflow-x-hidden antialiased'>
         <ThemeProvider>
@@ -38,7 +53,6 @@ export default function RootLayout({
           </div>
         </ThemeProvider>
       </body>
-      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID as string} />
     </html>
   );
 }

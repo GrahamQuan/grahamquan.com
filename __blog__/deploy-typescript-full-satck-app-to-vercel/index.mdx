@@ -1,0 +1,67 @@
+export const metadata = {
+  title: 'Deploy typescript full-satck app to vercel: front-end(vite + react) and back-end(node + express)',
+  date: '2024-02-08',
+  description: 'Maximize your full-stack development potential with TypeScript, React, and Express, deploy to Vercel using Vite for lightning-fast front-end development alongside robust back-end solutions. And read environment variables',
+  keywords: ['full-stack', 'MERN', 'TypeScript', 'React', 'Express', 'Vite', 'Deployment', 'Vercel'],
+};
+
+## my file structure
+
+```sh
+api
+├── src
+│   └── index.ts
+├── .env
+├── package.json
+├── tsconfig.json
+└── vercel.json
+client
+├── src
+│   ├── App.tsx
+│   └── main.tsx
+├── .env
+├── package.json
+└── tsconfig.json
+```
+
+## delpoy node express back-end to vercel
+
+1. upload your code to github
+2. go to vercel dashboard
+3. `Framework Preset` choose `other`
+4. `Root Directory` choose `api`
+5. add environment variables
+   - ENV_DATA
+   - PORT
+6. Deploy
+
+### add `vercel.json` to your node app (this is vital)
+
+- vercel host support `.js` and `.ts` files, so we could just use it
+- also use full file name, use `src/index.ts` instead of `src`
+
+```json
+{
+  "version": 2,
+  "builds": [{ "src": "src/index.ts", "use": "@vercel/node" }],
+  "rewrites": [{ "source": "/(.*)", "destination": "src/index.ts" }]
+}
+```
+
+## delpoy vite react front-end to vercel
+
+1. upload your code to github
+2. go to vercel dashboard
+3. `Framework Preset` choose `vite`
+4. `Root Directory` choose `client`
+5. add environment variables
+   - VITE_API_URL
+6. Deploy
+
+### vercel link:
+
+[front-end](https://fullstack-vercel-client.vercel.app/)
+
+[back-end](https://fullstack-vercel-api.vercel.app/)
+
+[github project link](https://github.com/GrahamQuan/fullstack-vercel)
