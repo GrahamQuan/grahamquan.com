@@ -29,16 +29,16 @@ export async function getBlogPostBySlug(slug: string): Promise<{
       return null;
     }
 
-    let module = await import(`../__blog__/${slug}/index.mdx`);
-    if (!module.default) {
+    let blogPost = await import(`../__blog__/${slug}/index.mdx`);
+    if (!blogPost.default) {
       return null;
     }
 
     return {
-      Component: module.default,
+      Component: blogPost.default,
       metadata: {
         // authors: [],
-        ...module.metadata,
+        ...blogPost.metadata,
       },
       slug,
     };

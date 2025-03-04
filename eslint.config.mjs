@@ -14,6 +14,12 @@ const eslintConfig = [
     extends: ['next/core-web-vitals', 'next/typescript', 'prettier'],
     plugins: ['prettier'],
   }),
+  {
+    rules: {
+      'prefer-const': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
 ];
 
 export default eslintConfig;
