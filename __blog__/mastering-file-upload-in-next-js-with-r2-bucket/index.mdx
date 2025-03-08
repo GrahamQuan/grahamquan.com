@@ -1,7 +1,7 @@
 export const metadata = {
   title: 'Mastering File Upload and Download in Next.js - A Comprehensive Guide with Cloudflare R2 Bucket (S3-Compatible)',
   description: 'Learn how to upload and download files in Next.js using Cloudflare R2 bucket (S3-Compatible) with production ready code',
-  date: '2025-03-01',
+  date: '2025-03-08',
   pin: true,
 };
 
@@ -11,7 +11,7 @@ github link: https://github.com/GrahamQuan/nextjs-file-upload
 
 ## blog outline
 1. simple file upload & download (single file and multiple files)
-2. multi part large file upload & download
+2. multi part large file upload
 3. production ready code (TODO: new blog)
 
 ## setup bucket (Cloudflare R2)
@@ -52,7 +52,7 @@ cloudflare dash
       "*"
     ],
     "ExposeHeaders": [
-      "ETag"    <--- this for multi part uplaod
+      "ETag"    <--- this for multi part large file upload
     ],
     "MaxAgeSeconds": 3600
   }
@@ -64,6 +64,7 @@ cloudflare dash
 > TODO
 
 ```bash
+// [!code filename:.env]
 BUCKET_ACCESS_KEY_ID=
 BUCKET_SECRET_ACCESS_KEY=
 BUCKET_ENDPOINT=
@@ -76,7 +77,9 @@ BUCKET_PUBLIC_URL=
 
 ## simple single file upload with react
 ### backend
-- BucketClient
+#### bucket client
+- use as separate file so we use the same setup
+- under `lib/server-only/index.ts` so we can import it only on server side
 ```ts
 // [!code filename:lib/server-only/bucket-client.ts]
 import { S3Client } from '@aws-sdk/client-s3';
@@ -92,18 +95,15 @@ const BucketClient = new S3Client({
 
 export default BucketClient;
 ```
-- create presigned url function
 
+#### create presigned url function
+- under `lib/server-only/index.ts` so we can import it only on server side
+- use `nanoid` to generate unique id, key be like: `2025/03/01/1234567890.png`, separate by time, which is good for organization
+- params is `mimeType`, which tells bucket what type of file it is, mimeType be like `image/png`
+- return `fileUrl` for file preview and `presignedUrl` for file upload
 ```ts
 // [!code filename:lib/server-only/create-presigned-url.ts]
-import { PutObjectCommand } from '@aws-sdk/client-s3';
-import { nanoid } from 'nanoid';
-import BucketClient from './bucket-client';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import {
-  createDateFolderPath,
-  getFileExtensionByMimeType,
-} from '../file-utils';
+import "...";
 
 export default async function createPresignedUrl(
   mimeType: string // be like: image/png
@@ -128,275 +128,298 @@ export default async function createPresignedUrl(
   return { fileUrl, presignedUrl };
 }
 ```
-- route
+#### API
+- under `app/api/presigned-url/route.ts`
+- use `createPresignedUrl` to create presigned url
+- files type is `{ mimeType: string; fileSize: number}[]`, why is array? because you can generate multiple presigned url at one request
+- return `fileUrl` for file preview and `presignedUrl` for file upload
+- you should do authentication in here (i am not doing it for this demo)
+
 ```ts
 // [!code filename:app/api/presigned-url/route.ts]
-import { NextRequest, NextResponse } from 'next/server';
-import {
-  PresignedUrlRequestBody,
-  PresignedUrlResponse,
-  ResponseData,
-} from '@/types';
-import { createPresignedUrl } from '@/lib/server-only';
-
 export async function POST(request: NextRequest) {
-  try {
-    const body: PresignedUrlRequestBody = await request.json();
-    const { files } = body;
-
-    if (!files || !Array.isArray(files) || files.length === 0) {
-      return NextResponse.json(
-        {
-          code: 400,
-          msg: 'Missing or invalid files array',
-        } satisfies ResponseData,
-        { status: 400 }
+  // ...
+  const results = await Promise.all(
+    files.map(async (file) => {
+      const { fileUrl, presignedUrl } = await createPresignedUrl(
+        file.mimeType
       );
-    }
-
-    const results = await Promise.all(
-      files.map(async (file) => {
-        const { fileUrl, presignedUrl } = await createPresignedUrl(
-          file.mimeType
-        );
-        return {
-          fileUrl,
-          presignedUrl,
-        };
-      })
-    );
-
-    return NextResponse.json({
-      code: 200,
-      msg: 'Presigned URLs generated successfully',
-      data: results,
-    } satisfies PresignedUrlResponse);
-  } catch (error) {
-    console.error('Error generating presigned URLs:', error);
-    return NextResponse.json(
-      {
-        code: 500,
-        msg: 'Failed to generate presigned URLs',
-      } satisfies ResponseData,
-      { status: 500 }
-    );
-  }
+      return {  
+        fileUrl, 
+        presignedUrl,
+      };
+    })
+  );
+  // ...
 }
 ```
 
 ### frontend
 
 #### upload with form
+- use `<form>` to upload file
+  - why use `<form>`? because react Uncontrolled Components, good performance because it wont trigger react to render when file change
+  - if you need to preview file, you can use `<input type="file" id="..." onChange={handleFileChange} />`
+- There are two ways to style `<input type="file" id="...">`
+  - (1) use `<label htmlFor="...">` to style it, this how `mui` do it
+  - (2) use `<button>` to style it, but you need to do something like `inputRef.current?.click()` to trigger file select, this how `antd` do it
+- if you wanna upload multiple files
+  - change `multiple={false}` to `multiple={true}`
+  - change file to be `File[]` like `const formFileList = formData.getAll('file') as File[];`
+  - more detail check my code `components/multi-files-upload.tsx` in github repo
+
 ```tsx
 // [!code filename:components/single-file-upload.tsx]
-'use client';
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-import { useState } from 'react';
-import { Download, Upload } from 'lucide-react';
-import { PresignedUrlResponse } from '@/types';
-import { fileDownload } from '@/lib/file-utils';
+  const formData = new FormData(e.currentTarget);
+  const formFile = formData.get('file') as File;
 
-export default function SingleFileUpload() {
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    const formFile = formData.get('file') as File;
-
-    if (!formFile) {
-      alert('Please select a file');
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const res = await fetch('/api/presigned-url', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+  // ...
+  const res = await fetch('/api/presigned-url', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      files: [
+        {
+          mimeType: file?.type || '',
+          fileSize: file?.size || 0,
         },
-        body: JSON.stringify({
-          files: [
-            {
-              mimeType: file?.type || '',
-              fileSize: file?.size || 0,
-            },
-          ],
-        }),
-      });
-
-      const resJson = (await res.json()) as PresignedUrlResponse;
-
-      if (resJson.code !== 200 || !resJson.data) {
-        console.log('error msg', resJson);
-        return;
-      }
-
-      await Promise.all(
-        resJson.data.map(async (el) => {
-          if (!el.presignedUrl) {
-            throw new Error('No presigned url found for upload');
-          }
-          return fetch(el.presignedUrl, {
-            method: 'PUT',
-            body: formFile,
-            headers: {
-              'Content-Type': formFile.type,
-            },
-          });
-        })
-      );
-
-      setPreviewUrl(resJson.data[0].fileUrl);
-    } catch (error: any) {
-      console.error(error);
-      console.log(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFile(file);
-    }
-  };
-
-  const onDownload = () => {
-    if (previewUrl) {
-      fileDownload(previewUrl);
-    }
-  };
-
-  return (
-    <div className='flex flex-col gap-5 w-full items-center py-5'>
-      <form
-        onSubmit={handleSubmit}
-        className='flex flex-col gap-3 border border-sky-500 rounded-lg p-5'
-      >
-        <div>Upload form</div>
-        <div className='flex gap-3'>
-          <label
-            htmlFor='file' // match with <input> id
-            className='size-16 flex justify-center items-center rounded-lg bg-sky-500 hover:cursor-pointer'
-          >
-            <Upload className='size-8' />
-            <input
-              type='file'
-              name='file' // required for form submission
-              id='file' // required for <label>
-              multiple={false} // (1)true for multiple files (2)false for single file
-              onChange={handleFileChange}
-              className='hidden'
-              accept='image/*' // only allow image files
-            />
-          </label>
-          {file && (
-            <>
-              {file.type.startsWith('image') && (
-                <div className='size-[150px] border rounded border-sky-500 flex justify-center items-center'>
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt='preview'
-                    className='object-cover max-w-full max-h-full'
-                  />
-                </div>
-              )}
-            </>
-          )}
-        </div>
-        <button type='submit' className='py-2 px-3 bg-sky-500 rounded'>
-          {loading ? 'Uploading...' : 'Upload'}
-        </button>
-      </form>
-      <div>upload result:</div>
-      <div className='relative size-[200px] border rounded border-teal-500 flex justify-center items-center'>
-        {previewUrl && (
-          <>
-            <button
-              type='button'
-              onClick={onDownload}
-              className='absolute top-2 right-2 size-6 rounded bg-white/20 backdrop-blur-md flex justify-center items-center'
-            >
-              <Download className='size-4' />
-            </button>
-            <img
-              src={previewUrl}
-              alt='preview'
-              className='object-cover max-w-full max-h-full'
-            />
-          </>
-        )}
-      </div>
-    </div>
-  );
+      ],
+    }),
+  });
+  // ...
 }
 
+<form onSubmit={...}>
+  <div className='flex gap-3'>
+    <label
+      htmlFor='file' // match with <input> id
+      className='size-16 flex justify-center items-center rounded-lg bg-sky-500 hover:cursor-pointer'
+    >
+      <Upload className='size-8' />
+      <input
+        type='file'
+        name='file' // required for form submission
+        id='file' // required for <label>
+        multiple={false} // (1)true for multiple files (2)false for single file
+        onChange={handleFileChange}
+        className='hidden'
+        accept='image/*' // only allow image files
+      />
+    </label>
+  </div>
+</form>
 ```
 
 #### download file
--  TODO
+- add timestamp to url to avoid browser cache and CORS
 
+```tsx
+// [!code filename:hooks/use-file-download.ts]
+import { getFileNameFromUrl } from '@/lib/file-utils';
+import { useCallback, useState } from 'react';
 
+export default function useFileDownload() {
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const fileDownload = useCallback(
+    async (url: string) => {
+      try {
+        setIsDownloading(true);
+        // add timestamp to url to avoid browser cache and CORS
+        const response = await fetch(`${url}?t=${Date.now()}`); // [!code highlight]
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = getFileNameFromUrl(url);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(link.href);
+        setIsDownloading(false);
+      } catch (error) {
+        console.error('download file error:', error);
+      } finally {
+        setIsDownloading(false);
+      }
+    },
+    [setIsDownloading]
+  );
+
+  return { isDownloading, fileDownload };
+}
+```
 
 ## multipart upload for large file
-### step
+### simple step
 1. get presigned url for each slice
-2. upload sliced file and get `etag` from response header
-3. tell server all slices is uploaded and get the file url
+2. upload sliced file to bucket and get `ETag` from response header
+3. tell server all slices is uploaded and get the file url so you can preview
 
 ps
-> you need to setup cloudflare CORS policy to get `etag` header
+> you need to setup cloudflare CORS policy to get `ETag` header, see config above
 
-```json
-[
-  {
-    "AllowedOrigins": [
-      "http://localhost:3000",
-      "http://localhost:3001",
-      "https://assets.grahamquan.com"
-    ],
-    "AllowedMethods": [
-      "GET",
-      "PUT",
-      "POST",
-      "HEAD",
-      "DELETE"
-    ],
-    "AllowedHeaders": [
-      "*"
-    ],
-    "ExposeHeaders": [
-      "ETag"    <--- add this
-    ],
-    "MaxAgeSeconds": 3600
+### API (needs two api to handle the process)
+1. create presigned url for each file part
+2. completed when all file parts upload
+
+#### (1) create presigned url for each file part
+- `partSize` is the size of each part, default is 5MB, the minimum part size requirement for R2/S3 Bucket
+- `partNumber` start from `1`, not `0`, this is aws s3 api requirement
+- `uploadId` is the id of the multipart upload, it is used to identify the multipart upload
+
+```ts
+// [!code filename:lib/server-only/create-multi-parts-presigned-url.ts]
+import "...";
+
+/**
+ * Creates a presigned URL for a multipart upload.
+ *
+ * @param {Object} options - The options for creating the presigned URL.
+ * @param {string} options.mimeType - The MIME type of the file, e.g., 'image/png'.
+ * @param {number} options.fileSize - The size of the file in bytes. (5 Mb ~ 5 Gb)
+ * @param {number} [options.partSize=5242880] - The size of each part in bytes. Defaults to 5MB, the minimum part size requirement for R2/S3 Bucket.
+ *
+ */
+export default async function createMultiPartsPresignedUrl({
+  mimeType,
+  fileSize,
+  partSize = 5 * 1024 * 1024,
+}: {
+  mimeType: string;
+  fileSize: number;
+  partSize?: number;
+}) {
+  const bucketName = process.env.BUCKET_NAME || '';
+  // key be like: 2025/03/01/1234567890.png
+  const key = `${createDateFolderPath()}/${nanoid()}.${getFileExtensionByMimeType(
+    mimeType
+  )}`;
+
+  // Calculate the part size and count
+  const partCount = Math.ceil(fileSize / partSize);
+
+  // Initialize the multipart upload
+  const multipartUpload = await BucketClient.send(
+    new CreateMultipartUploadCommand({
+      Bucket: bucketName,
+      Key: key,
+      ContentType: mimeType,
+    })
+  );
+
+  const uploadId = multipartUpload.UploadId; // [!code highlight]
+
+  if (!uploadId) {
+    throw new Error('Failed to initialize multipart upload');
   }
-]
+
+  // Generate a presigned URL for each part
+  const presignedUrlList = [];
+
+  // partNumber start from 1
+  // because AWS S3 API PartNumber start from 1, max is 10000
+  for (let partNumber = 1; partNumber <= partCount; partNumber++) { // [!code highlight]
+    const command = new UploadPartCommand({
+      Bucket: bucketName,
+      Key: key,
+      UploadId: uploadId,
+      PartNumber: partNumber,
+    });
+
+    const presignedUrl = await getSignedUrl(BucketClient, command, {
+      expiresIn: 3600,
+    });
+
+    presignedUrlList.push({
+      presignedUrl,
+      partNumber,
+    });
+  }
+
+  return {
+    key,
+    uploadId,
+    presignedUrlList,
+  };
+}
+```
+
+#### (2) completed when all file parts upload
+- request body params is like
+```ts
+{
+  key: string;
+  uploadId: string;
+  parts: {
+    partNumber: number;
+    etag: string;
+  }[];
+};
+```
+- return `fileUrl` for file preview
+
+```ts
+// [!code filename:app/api/completed-multi-part-upload/route.ts]
+import "...";
+
+export async function POST(request: NextRequest) {
+  try {
+    // ...
+
+    // Prepare part information for CompleteMultipartUpload, ensuring it's sorted by PartNumber
+    const completedParts = parts
+      .sort((a, b) => a.partNumber - b.partNumber)
+      .map((part) => ({
+        PartNumber: part.partNumber,
+        ETag: part.etag,
+      }));
+
+    const completeCommand = new CompleteMultipartUploadCommand({
+      Bucket: process.env.BUCKET_NAME,
+      Key: key,
+      UploadId: uploadId,
+      MultipartUpload: {
+        Parts: completedParts,
+      },
+    });
+
+    try {
+      const result = await BucketClient.send(completeCommand);
+      console.log('Multipart upload completed successfully:', result);
+    } catch (error) {
+      console.error('S3 CompleteMultipartUpload error details:', error);
+      throw error;
+    }
+
+    const fileUrl = `${process.env.BUCKET_PUBLIC_URL}/${key}`;
+
+    // ...
+}
 ```
 
 ### front end
+step
+1. create presigned url for each file part
+2. upload sliced file, get `ETag` from response header if any file part upload success
+3. tell server all slices is uploaded and get the file url
+
 ```tsx
 // [!code filename:components/multi-parts-large-file-upload.tsx]
 'use client';
 
-import { useState } from 'react';
-import { Download, Upload } from 'lucide-react';
-import {
-  CompletedMultiPartUploadRequestBody,
-  MultiPartsPresignedUrlResponse,
-} from '@/types';
-import { fileDownload, sliceFileToMultipart } from '@/lib/file-utils';
-
 export default function MultipartsLargeFileUpload() {
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  // ...
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -404,16 +427,9 @@ export default function MultipartsLargeFileUpload() {
     const formData = new FormData(e.currentTarget);
     const formFile = formData.get('file') as File;
 
-    if (!formFile) {
-      alert('Please select a file');
-      return;
-    }
-
-    setLoading(true);
-
     try {
       // (1) create presigned url
-      const presignedUrlResponse = await fetch(
+      const presignedUrlResponse = await fetch( // [!code highlight]
         '/api/multi-parts-presigned-url',
         {
           method: 'POST',
@@ -434,17 +450,14 @@ export default function MultipartsLargeFileUpload() {
       const presignedUrlJson =
         (await presignedUrlResponse.json()) as MultiPartsPresignedUrlResponse;
 
-      if (presignedUrlJson.code !== 200 || !presignedUrlJson.data) {
-        console.log('error msg', presignedUrlJson);
-        return;
-      }
+      // ...
 
       const { key, uploadId, presignedUrlList } = presignedUrlJson.data;
 
       const slicedFileList = sliceFileToMultipart(formFile);
 
       // (2) upload sliced file
-      const uploadResponse = await Promise.all(
+      const uploadResponse = await Promise.all( // [!code highlight]
         presignedUrlList.map(async (el, idx) => {
           if (!el.presignedUrl) {
             throw new Error('No presigned url found for upload');
@@ -493,7 +506,7 @@ export default function MultipartsLargeFileUpload() {
       };
 
       // (3) tell server all slices is uploaded and get the file url
-      const completedRes = await fetch('/api/completed-multi-part-upload', {
+      const completedRes = await fetch('/api/completed-multi-part-upload', { // [!code highlight]
         method: 'POST',
         body: JSON.stringify(params),
       });
@@ -504,255 +517,41 @@ export default function MultipartsLargeFileUpload() {
 
       setPreviewUrl(completedJson.fileUrl);
     } catch (error: any) {
-      console.error(error);
-      console.log(error.message);
+      console.log(error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFile(file);
-    }
-  };
 
-  const onDownload = () => {
-    if (previewUrl) {
-      fileDownload(previewUrl);
-    }
-  };
-
-  return (
-    <div className='flex flex-col gap-5 w-full items-center py-5'>
-      <form
-        onSubmit={handleSubmit}
-        className='flex flex-col gap-3 border border-sky-500 rounded-lg p-5'
-      >
-        <div>Upload form</div>
-        <div className='flex gap-3'>
-          <label
-            htmlFor='file' // match with <input> id
-            className='size-16 flex justify-center items-center rounded-lg bg-sky-500 hover:cursor-pointer'
-          >
-            <Upload className='size-8' />
-            <input
-              type='file'
-              name='file' // required for form submission
-              id='file' // required for <label>
-              multiple={false} // (1)true for multiple files (2)false for single file
-              onChange={handleFileChange}
-              className='hidden'
-              accept='image/*' // only allow image files
-            />
-          </label>
-          {file && (
-            <>
-              {file.type.startsWith('image') && (
-                <div className='size-[150px] border rounded border-sky-500 flex justify-center items-center'>
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt='preview'
-                    className='object-cover max-w-full max-h-full'
-                  />
-                </div>
-              )}
-            </>
-          )}
-        </div>
-        <button type='submit' className='py-2 px-3 bg-sky-500 rounded'>
-          {loading ? 'Uploading...' : 'Upload'}
-        </button>
-      </form>
-      <div>upload result:</div>
-      <div className='relative size-[200px] border rounded border-teal-500 flex justify-center items-center'>
-        {previewUrl && (
-          <>
-            <button
-              type='button'
-              onClick={onDownload}
-              className='absolute top-2 right-2 size-6 rounded bg-white/20 backdrop-blur-md flex justify-center items-center'
-            >
-              <Download className='size-4' />
-            </button>
-            <img
-              src={previewUrl}
-              alt='preview'
-              className='object-cover max-w-full max-h-full'
-            />
-          </>
-        )}
-      </div>
-    </div>
-  );
+  return ...
 }
 ```
 
-### backend
-- (1) create presigned url for each sliced file
+- file utils
 ```ts
-// [!code filename:lib/server-only/create-multi-parts-presigned-url.ts]
-import {
-  CreateMultipartUploadCommand,
-  UploadPartCommand,
-} from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import BucketClient from './bucket-client';
-import {
-  createDateFolderPath,
-  getFileExtensionByMimeType,
-} from '../file-utils';
-import { nanoid } from 'nanoid';
+// [!code filename:lib/file-utils.ts]
+export function sliceFileToMultipart(
+  file: File,
+  sliceSize: number = 5 * 1024 * 1024
+): Blob[] {
+  const totalSize = file.size;
+  const totalSlices = Math.ceil(totalSize / sliceSize);
+  const slices = [];
 
-/**
- * Creates a presigned URL for a multipart upload.
- *
- * @param {Object} options - The options for creating the presigned URL.
- * @param {string} options.mimeType - The MIME type of the file, e.g., 'image/png'.
- * @param {number} options.fileSize - The size of the file in bytes. (5 Mb ~ 5 Gb)
- * @param {number} [options.partSize=5242880] - The size of each part in bytes. Defaults to 5MB, the minimum part size requirement for R2/S3 Bucket.
- *
- */
-export default async function createMultiPartsPresignedUrl({
-  mimeType,
-  fileSize,
-  partSize = 5 * 1024 * 1024,
-}: {
-  mimeType: string;
-  fileSize: number;
-  partSize?: number;
-}) {
-  const bucketName = process.env.BUCKET_NAME || '';
-  // key be like: 2025/03/01/1234567890.png
-  const key = `${createDateFolderPath()}/${nanoid()}.${getFileExtensionByMimeType(
-    mimeType
-  )}`;
-
-  // Calculate the part size and count
-  const partCount = Math.ceil(fileSize / partSize);
-
-  // Initialize the multipart upload
-  const multipartUpload = await BucketClient.send(
-    new CreateMultipartUploadCommand({
-      Bucket: bucketName,
-      Key: key,
-      ContentType: mimeType,
-    })
-  );
-
-  const uploadId = multipartUpload.UploadId;
-
-  if (!uploadId) {
-    throw new Error('Failed to initialize multipart upload');
+  for (let i = 0; i < totalSlices; i++) {
+    const start = i * sliceSize;
+    const end = start + sliceSize;
+    const slice = file.slice(start, end);
+    slices.push(slice);
   }
 
-  // Generate a presigned URL for each part
-  const presignedUrlList = [];
-
-  // partNumber start from 1
-  // because AWS S3 API PartNumber start from 1, max is 10000
-  for (let partNumber = 1; partNumber <= partCount; partNumber++) {
-    const command = new UploadPartCommand({
-      Bucket: bucketName,
-      Key: key,
-      UploadId: uploadId,
-      PartNumber: partNumber,
-    });
-
-    const presignedUrl = await getSignedUrl(BucketClient, command, {
-      expiresIn: 3600,
-    });
-
-    presignedUrlList.push({
-      presignedUrl,
-      partNumber,
-    });
-  }
-
-  return {
-    key,
-    uploadId,
-    presignedUrlList,
-  };
+  return slices;
 }
 ```
 
-- (2) completed all file parts upload
-```ts
-// [!code filename:app/api/completed-multi-part-upload/route.ts]
-import { NextRequest, NextResponse } from 'next/server';
-import { CompleteMultipartUploadCommand } from '@aws-sdk/client-s3';
-import BucketClient from '@/lib/server-only/bucket-client';
-import { CompletedMultiPartUploadRequestBody } from '@/types';
 
-export async function POST(request: NextRequest) {
-  try {
-    const body: CompletedMultiPartUploadRequestBody = await request.json();
-    const { key, uploadId, parts } = body;
-
-    if (!key || !uploadId || !parts || !Array.isArray(parts)) {
-      return NextResponse.json(
-        { success: false, message: 'Missing required parameters' },
-        { status: 400 }
-      );
-    }
-
-    console.log('Received completion request for:', { key, uploadId });
-    console.log('Parts data:', JSON.stringify(parts));
-
-    // Prepare part information for CompleteMultipartUpload, ensuring it's sorted by PartNumber
-    const completedParts = parts
-      .sort((a, b) => a.partNumber - b.partNumber)
-      .map((part) => ({
-        PartNumber: part.partNumber,
-        ETag: part.etag,
-      }));
-
-    console.log('Formatted parts for S3:', JSON.stringify(completedParts));
-
-    const completeCommand = new CompleteMultipartUploadCommand({
-      Bucket: process.env.BUCKET_NAME,
-      Key: key,
-      UploadId: uploadId,
-      MultipartUpload: {
-        Parts: completedParts,
-      },
-    });
-
-    try {
-      const result = await BucketClient.send(completeCommand);
-      console.log('Multipart upload completed successfully:', result);
-    } catch (error) {
-      console.error('S3 CompleteMultipartUpload error details:', error);
-      throw error;
-    }
-
-    // return the file url
-    const fileUrl = `${process.env.BUCKET_PUBLIC_URL}/${key}`;
-
-    return NextResponse.json({
-      code: 200,
-      msg: 'Multipart upload completed successfully',
-      fileUrl,
-    });
-  } catch (error) {
-    console.error('Error completing multipart upload:', error);
-    return NextResponse.json(
-      {
-        code: 500,
-        msg:
-          'Failed to complete multipart upload: ' +
-          (error instanceof Error ? error.message : String(error)),
-        error: error instanceof Error ? error.stack : null,
-      },
-      { status: 500 }
-    );
-  }
-}
-```
-
-## production ready code
+## production ready code (soon)
 ### tech stack
 - nextjs
 - react
