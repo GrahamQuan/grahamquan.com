@@ -65,8 +65,7 @@ export default function ZoomVideo({ src, width = '100%', height = 'auto', classN
         width={width}
         height={height}
         className={cn('cursor-zoom-in', className)}
-        preload='metadata'
-        autoPlay
+        preload='none'
         onClick={handleVideoClick}
       />
       <dialog

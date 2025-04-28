@@ -8,7 +8,7 @@ import 'react-medium-image-zoom/dist/styles.css';
 export default function ZoomImage({ src, alt, ...props }: ComponentProps<'img'>) {
   return (
     <Zoom>
-      <img src={src} alt={alt} {...props} />
+      <img loading='lazy' decoding='async' fetchPriority='low' src={src} alt={alt} {...props} />
     </Zoom>
   );
 }

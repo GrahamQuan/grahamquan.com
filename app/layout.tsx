@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { GoogleAnalytics } from '@next/third-parties/google';
+import { GeistSans } from 'geist/font/sans';
 
 import Footer from '@/components/screen/footer';
 import Header from '@/components/screen/header';
@@ -40,7 +41,9 @@ export default function RootLayout({
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID as string} />
         <CloudflareAnalyticsScript />
       </head>
-      <body className='border-color mdx:border-x relative flex min-h-dvh w-dvw max-w-screen flex-col overflow-x-hidden antialiased'>
+      <body
+        className={`${GeistSans.variable} font-geist-sans border-color mdx:border-x relative flex min-h-dvh w-dvw max-w-screen flex-col overflow-x-hidden antialiased`}
+      >
         <ThemeProvider>
           <Header />
           <div className='mdx:grid-cols-[auto_2rem_56rem_2rem_auto] grid grid-cols-[12px_auto_12px] grid-rows-[1fr_auto]'>

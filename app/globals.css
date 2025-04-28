@@ -91,6 +91,7 @@
 }
 
 @theme inline {
+  --font-geist-sans: var(--font-geist-sans), system-ui;
   --spacing: 1px;
   --breakpoint-mdx: 56rem;
   --color-chart-5: var(--chart-5);

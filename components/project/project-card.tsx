@@ -36,7 +36,7 @@ export default function ProjectCard({ title, description, href, githubLink, imgS
             loading='lazy'
             decoding='async'
             fetchPriority='low'
-            className='border-color size-full border'
+            className='border-color bg-border-color size-full border'
           />
         )}
       </div>
