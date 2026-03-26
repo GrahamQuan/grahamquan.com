@@ -1,13 +1,12 @@
-import React from 'react';
+import { ArrowUpLeft, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next/types';
-import { ArrowUpLeft, Plus } from 'lucide-react';
-
-import { getBlogPostBySlug, getBlogPostSlugs } from '@/lib/blog-utils';
-import { formatDate } from '@/lib/time-utils';
+import React from 'react';
 import GridContainer from '@/components/grid-layout/grid-container';
 import GridSmallBackground from '@/components/grid-layout/grid-small-background';
+import { getBlogPostBySlug, getBlogPostSlugs } from '@/lib/blog-utils';
+import { formatDate } from '@/lib/time-utils';
 
 type Props = {
   params: Promise<{

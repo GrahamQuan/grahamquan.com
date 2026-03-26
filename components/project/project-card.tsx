@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { SquareArrowOutUpRight } from 'lucide-react';
+import Link from 'next/link';
 
 import type { Project } from '@/lib/constants';
 

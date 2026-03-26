@@ -1,6 +1,7 @@
 // import { TechStack } from '@/lib/constants';
-import { TechStack } from '@/lib/constants';
+
 import GridContent from '@/components/grid-layout/grid-content';
+import { TechStack } from '@/lib/constants';
 
 export default function Page() {
   return (

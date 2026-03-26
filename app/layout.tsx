@@ -1,6 +1,6 @@
-import type { Metadata } from 'next';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { GeistSans } from 'geist/font/sans';
+import type { Metadata } from 'next';
 
 import Footer from '@/components/screen/footer';
 import Header from '@/components/screen/header';

@@ -1,5 +1,5 @@
-import { Fragment } from 'react';
 import { Plus } from 'lucide-react';
+import { Fragment } from 'react';
 
 type Props = {
   list: { title: string; keywords: (string | { title: string; keywords: string[] })[] }[];

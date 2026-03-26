@@ -1,5 +1,5 @@
-import { getBlogPostBySlug, getBlogPostSlugs, nonNullable } from '@/lib/blog-utils';
 import BlogGridContent from '@/components/grid-layout/blog-grid-content';
+import { getBlogPostBySlug, getBlogPostSlugs, nonNullable } from '@/lib/blog-utils';
 
 export default async function Page() {
   let slugs = await getBlogPostSlugs();

@@ -9,9 +9,7 @@ const highlighterPromise = createHighlighter({
 });
 
 export default async function CodeSnippet({ code, lang = 'bash' }: { code: string; lang?: string }) {
-  const html = await (
-    await highlighterPromise
-  ).codeToHtml(code, {
+  const html = await (await highlighterPromise).codeToHtml(code, {
     lang,
     theme: 'github-dark-dimmed',
     transformers: [

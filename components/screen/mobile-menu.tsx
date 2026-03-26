@@ -1,8 +1,8 @@
 'use client';
 
-import { useCallback, useState } from 'react';
-import Link from 'next/link';
 import { ChevronRight, Menu, X } from 'lucide-react';
+import Link from 'next/link';
+import { useCallback, useState } from 'react';
 
 import { NavigationList } from '@/lib/constants';
 

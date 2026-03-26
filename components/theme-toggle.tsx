@@ -1,7 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Monitor, Moon, Sun } from 'lucide-react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -29,7 +29,9 @@ export let ThemeContext = createContext<{
   setTheme: (theme: Theme) => void;
 }>({
   theme: 'system',
-  setTheme: () => {},
+  setTheme: () => {
+    // Default no-op
+  },
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -50,7 +52,7 @@ function onChange(theme: Theme, setTheme: (theme: Theme) => void) {
   } else {
     localStorage.removeItem('currentTheme');
   }
-  (window as any)._updateTheme(theme);
+  (window as Window & { _updateTheme?: (theme: Theme) => void })._updateTheme?.(theme);
   setTheme(theme);
 }
 

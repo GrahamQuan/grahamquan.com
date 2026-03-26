@@ -1,10 +1,9 @@
 'use client';
 
-import { useCallback } from 'react';
 import { Check, Copy } from 'lucide-react';
-
-import { cn } from '@/lib/utils';
+import { useCallback } from 'react';
 import useCopy from '@/hooks/use-copy';
+import { cn } from '@/lib/utils';
 
 export default function CodeSnippetHeader({ title, code }: { title: string; code: string }) {
   const { isCopied, copy } = useCopy();

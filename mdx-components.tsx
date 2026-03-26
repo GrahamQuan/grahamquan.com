@@ -1,6 +1,6 @@
-import React from 'react';
-import Link from 'next/link';
 import type { MDXComponents } from 'mdx/types';
+import Link from 'next/link';
+import React from 'react';
 
 import CodeSnippet from './components/code/code-snippet';
 import CodeSnippetHeader from './components/code/code-snippet-header';
@@ -32,8 +32,8 @@ function slugify(str: React.ReactNode) {
     .trim() // Remove whitespace from both ends of a string
     .replace(/\s+/g, '-') // Replace spaces with -
     .replace(/&/g, '-and-') // Replace & with 'and'
-    .replace(/[^\w\-]+/g, '') // Remove all non-word characters except for -
-    .replace(/\-\-+/g, '-'); // Replace multiple - with single -
+    .replace(/[^\w-]+/g, '') // Remove all non-word characters except for -
+    .replace(/--+/g, '-'); // Replace multiple - with single -
 }
 
 function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
@@ -107,7 +107,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 
       // Extract `[!code filename:the_file_name.js]` directives from the first line of code
       let lines = code.split('\n');
-      let filenameRegex = /\[\!code filename\:(.+)\]/;
+      let filenameRegex = /\[!code filename:(.+)\]/;
       let match = lines[0].match(filenameRegex);
       if (match) {
         filename = match[1];

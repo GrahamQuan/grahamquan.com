@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
-import Link from 'next/link';
 import { ArrowUpRight, RotateCw } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect } from 'react';
 
-export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function ErrorComponent({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     console.error(error);
   }, [error]);

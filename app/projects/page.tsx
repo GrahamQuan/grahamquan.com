@@ -1,5 +1,5 @@
-import { ProjectList } from '@/lib/constants';
 import ProjectCard from '@/components/project/project-card';
+import { ProjectList } from '@/lib/constants';
 
 export default function Page() {
   const isOddNum = ProjectList.length % 2 === 1;
