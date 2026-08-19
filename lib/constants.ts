@@ -1,3 +1,5 @@
+import { envClient } from '@/lib/env-client';
+
 export const AUTHOR = 'Graham Quan';
 export const UseMarkdownLaTeX: boolean = true;
 
@@ -19,11 +21,11 @@ export const NavigationList = [
 
 /* footer */
 export const SocialList = [
-  { title: 'GitHub', href: process.env.NEXT_PUBLIC_GITHUB_URL || '', target: '_blank' },
-  { title: 'X', href: process.env.NEXT_PUBLIC_TWITTER_URL || '', target: '_blank' },
+  { title: 'GitHub', href: envClient.NEXT_PUBLIC_GITHUB_URL, target: '_blank' },
+  { title: 'X', href: envClient.NEXT_PUBLIC_TWITTER_URL, target: '_blank' },
   {
     title: 'Email',
-    href: process.env.NEXT_PUBLIC_EMAIL_ADDRESS ? `mailto:${process.env.NEXT_PUBLIC_EMAIL_ADDRESS}` : '',
+    href: envClient.NEXT_PUBLIC_EMAIL_ADDRESS ? `mailto:${envClient.NEXT_PUBLIC_EMAIL_ADDRESS}` : '',
     type: 'email',
   },
 ];

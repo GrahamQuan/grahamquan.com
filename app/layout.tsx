@@ -6,13 +6,14 @@ import Footer from '@/components/screen/footer';
 import Header from '@/components/screen/header';
 import ThemeScript from '@/components/scripts/theme-script';
 import { ThemeProvider } from '@/components/theme-toggle';
+import { envClient } from '@/lib/env-client';
 
 import './globals.css';
 
 import CloudflareAnalyticsScript from '@/components/scripts/cloudflare-analytics-script';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),
+  metadataBase: new URL(envClient.NEXT_PUBLIC_BASE_URL),
   title: 'Graham Quan Blog',
   description: 'Next.js | TailwindCSS | TypeScript | React | Blog | node | express | vite | react-native | expo',
   keywords: [
@@ -38,7 +39,7 @@ export default function RootLayout({
     <html lang='en' suppressHydrationWarning>
       <head>
         <ThemeScript />
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID as string} />
+        <GoogleAnalytics gaId={envClient.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
         <CloudflareAnalyticsScript />
       </head>
       <body

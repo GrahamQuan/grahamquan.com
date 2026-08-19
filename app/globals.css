@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @custom-variant dark (&:is(.dark *));
 @plugin "@tailwindcss/typography";
@@ -138,19 +138,137 @@ code:not(pre > code) {
   @apply rounded-sm bg-neutral-100 px-6 py-4 text-[85%] whitespace-break-spaces before:content-none after:content-none dark:bg-neutral-800;
 }
 
-code {
-  counter-reset: step;
-  counter-increment: step calc(var(--start-step, 1) - 1);
+.code-snippet-viewport {
+  overflow: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-color: color-mix(in srgb, currentColor 20%, transparent) transparent;
 }
 
-code .line::before {
-  content: counter(step);
-  counter-increment: step;
-  width: 1rem;
-  margin-right: 1rem;
+.code-snippet-viewport pre {
+  min-width: 100%;
+  width: max-content;
+  margin: 0;
+  padding: 16px 0;
+  border-radius: 0;
+  background-color: transparent !important;
+  font-size: 13px;
+  line-height: 1.75;
+  tab-size: 2;
+}
+
+.code-snippet-viewport code {
+  display: block;
+  min-width: 100%;
+  counter-reset: code-line calc(var(--code-line-number-start, 1) - 1);
+}
+
+.code-snippet-viewport .line {
+  position: relative;
   display: inline-block;
-  color: rgba(115, 138, 148, 0.4);
+  width: 100%;
+  min-width: max-content;
+  min-height: 1lh;
+  padding: 0 20px;
+  isolation: isolate;
+}
+
+.code-snippet-viewport[data-line-numbers='true'] .line::before {
+  content: counter(code-line);
+  counter-increment: code-line;
+  display: inline-block;
+  width: 2.25rem;
+  padding-right: 16px;
+  color: color-mix(in srgb, currentColor 35%, transparent);
+  text-align: right;
   user-select: none;
+}
+
+.code-snippet-viewport .shiki,
+.code-snippet-viewport .shiki span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+  text-decoration: var(--shiki-light-text-decoration);
+}
+
+.dark .code-snippet-viewport .shiki,
+.dark .code-snippet-viewport .shiki span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+  text-decoration: var(--shiki-dark-text-decoration);
+}
+
+.code-snippet-viewport .line.highlighted {
+  background: linear-gradient(90deg, color-mix(in srgb, currentColor 10%, transparent), transparent 80%);
+  box-shadow: inset 2px 0 currentColor;
+}
+
+.code-snippet-viewport .line.diff.add {
+  background: linear-gradient(90deg, rgb(16 185 129 / 14%), transparent 80%);
+  box-shadow: inset 2px 0 rgb(16 185 129);
+}
+
+.code-snippet-viewport .line.diff.remove {
+  background: linear-gradient(90deg, rgb(244 63 94 / 14%), transparent 80%);
+  box-shadow: inset 2px 0 rgb(244 63 94);
+}
+
+.code-snippet-viewport .line.diff::after {
+  position: absolute;
+  left: 8px;
+  color: rgb(100 116 139);
+}
+
+.code-snippet-viewport .line.diff.add::after {
+  content: '+';
+  color: rgb(16 185 129);
+}
+
+.code-snippet-viewport .line.diff.remove::after {
+  content: '−';
+  color: rgb(244 63 94);
+}
+
+.code-snippet-viewport .highlighted-word {
+  margin: -2px;
+  padding: 2px;
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  border-radius: 3px;
+  background: color-mix(in srgb, currentColor 9%, transparent);
+}
+
+.code-snippet-viewport .has-focused .line:not(.focused) {
+  filter: blur(0.8px);
+  opacity: 0.45;
+  transition:
+    filter 150ms ease,
+    opacity 150ms ease;
+}
+
+.code-snippet:hover .has-focused .line:not(.focused) {
+  filter: none;
+  opacity: 0.75;
+}
+
+.code-snippet-viewport .line.error {
+  background-color: rgb(244 63 94 / 12%);
+  box-shadow: inset 2px 0 rgb(244 63 94);
+}
+
+.code-snippet-viewport .line.warning {
+  background-color: rgb(245 158 11 / 12%);
+  box-shadow: inset 2px 0 rgb(245 158 11);
+}
+
+@media (prefers-color-scheme: dark) {
+  .system .code-snippet-viewport .shiki,
+  .system .code-snippet-viewport .shiki span {
+    color: var(--shiki-dark);
+    font-style: var(--shiki-dark-font-style);
+    font-weight: var(--shiki-dark-font-weight);
+    text-decoration: var(--shiki-dark-text-decoration);
+  }
 }
 
 html {
@@ -162,7 +280,7 @@ body {
   background: var(--color-background);
 }
 
-[data-rmiz-modal-overlay="visible"] {
+[data-rmiz-modal-overlay='visible'] {
   background-color: rgba(0, 0, 0, 0.1) !important;
   backdrop-filter: blur(2px);
 }

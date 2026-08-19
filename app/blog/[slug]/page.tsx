@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next/types';
 import React from 'react';
+import GitHubCommentsSection from '@/components/blog/github-comments-section';
 import GridContainer from '@/components/grid-layout/grid-container';
 import GridSmallBackground from '@/components/grid-layout/grid-small-background';
 import { getBlogPostBySlug, getBlogPostSlugs } from '@/lib/blog-utils';
+import { envClient } from '@/lib/env-client';
 import { formatDate } from '@/lib/time-utils';
 
 type Props = {
@@ -28,7 +30,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   }
 
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL as string),
+    metadataBase: new URL(envClient.NEXT_PUBLIC_BASE_URL),
     title: post.metadata.title,
     description: post.metadata.description,
     keywords: post.metadata.keywords,
@@ -79,6 +81,7 @@ export default async function DocPage(props: Props) {
             </article>
           </GridSmallBackground>
         </GridContainer>
+        <GitHubCommentsSection />
         {/* </div> */}
       </div>
     </>

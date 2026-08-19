@@ -1,30 +1,52 @@
-'use client';
+import { FileCode2, Terminal } from 'lucide-react';
+import CodeCopyButton from './code-copy-button';
 
-import { Check, Copy } from 'lucide-react';
-import { useCallback } from 'react';
-import useCopy from '@/hooks/use-copy';
-import { cn } from '@/lib/utils';
+const languageLabels: Record<string, string> = {
+  bash: 'Shell',
+  css: 'CSS',
+  html: 'HTML',
+  javascript: 'JavaScript',
+  js: 'JavaScript',
+  json: 'JSON',
+  jsx: 'JSX',
+  markdown: 'Markdown',
+  md: 'Markdown',
+  mdx: 'MDX',
+  python: 'Python',
+  sh: 'Shell',
+  sql: 'SQL',
+  text: 'Text',
+  plaintext: 'Text',
+  txt: 'Text',
+  ts: 'TypeScript',
+  tsx: 'TSX',
+  typescript: 'TypeScript',
+  yaml: 'YAML',
+  yml: 'YAML',
+  zsh: 'Shell',
+};
 
-export default function CodeSnippetHeader({ title, code }: { title: string; code: string }) {
-  const { isCopied, copy } = useCopy();
+function getLanguageLabel(lang: string) {
+  return languageLabels[lang.toLowerCase()] || lang || 'Text';
+}
 
-  const handleCopy = useCallback(() => {
-    copy(code);
-  }, [code, copy]);
+export default function CodeSnippetHeader({ title, lang }: { title?: string; lang: string }) {
+  const languageLabel = getLanguageLabel(lang);
+  const isTerminal = ['bash', 'console', 'sh', 'shell', 'shellscript', 'zsh'].includes(lang.toLowerCase());
+  const Icon = isTerminal ? Terminal : FileCode2;
 
   return (
-    <div className='flex h-36 items-center justify-between rounded-t-sm bg-black/10 p-12 dark:bg-white/10'>
-      <div>{title}</div>
-      <button
-        onClick={handleCopy}
-        disabled={isCopied}
-        className={cn(
-          'flex size-24 items-center justify-center rounded',
-          !isCopied && 'hover:cursor-pointer hover:bg-white/5',
-        )}
-      >
-        {isCopied ? <Check className='size-16' /> : <Copy className='size-16' />}
-      </button>
-    </div>
+    <figcaption className='flex min-h-40 items-center justify-between gap-12 border-b border-black/10 bg-black/4 px-12 text-xs text-neutral-600 dark:border-white/10 dark:bg-white/4 dark:text-neutral-300'>
+      <div className='flex min-w-0 items-center gap-8 font-mono'>
+        <Icon aria-hidden='true' className='size-15 shrink-0 opacity-65' strokeWidth={1.75} />
+        <span className='truncate font-medium text-neutral-800 dark:text-neutral-100'>{title ?? languageLabel}</span>
+        {title ? (
+          <span className='shrink-0 rounded-sm border border-black/10 px-5 py-2 text-[10px] leading-none uppercase tracking-wider opacity-65 dark:border-white/10'>
+            {languageLabel}
+          </span>
+        ) : null}
+      </div>
+      <CodeCopyButton />
+    </figcaption>
   );
 }

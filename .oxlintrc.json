@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "nextjs"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error"
+  },
+  "rules": {
+    "no-shadow": "off",
+    "no-underscore-dangle": "off",
+    "typescript/no-explicit-any": "warn",
+    "nextjs/google-font-display": "warn",
+    "nextjs/google-font-preconnect": "warn",
+    "nextjs/no-document-import-in-page": "error",
+    "nextjs/no-head-element": "warn",
+    "nextjs/no-head-import-in-document": "error",
+    "nextjs/no-img-element": "off",
+    "nextjs/no-unwanted-polyfillio": "warn"
+  },
+  "env": {
+    "builtin": true,
+    "browser": true,
+    "node": true
+  },
+  "ignorePatterns": ["components/ui/**", "messages/**", "components.json"]
+}

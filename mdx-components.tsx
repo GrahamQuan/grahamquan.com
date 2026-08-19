@@ -1,11 +1,11 @@
 import type { MDXComponents } from 'mdx/types';
 import Link from 'next/link';
-import React from 'react';
+import React, { type ComponentProps, type ReactElement, type ReactNode } from 'react';
 
 import CodeSnippet from './components/code/code-snippet';
 import CodeSnippetHeader from './components/code/code-snippet-header';
 
-function getTextContent(node: React.ReactNode): string {
+function getTextContent(node: ReactNode): string {
   if (typeof node === 'string' || typeof node === 'number') {
     return String(node);
   }
@@ -15,8 +15,7 @@ function getTextContent(node: React.ReactNode): string {
       return '';
     }
 
-    // @ts-ignore
-    return getTextContent(node.props.children);
+    return getTextContent((node.props as { children?: ReactNode }).children);
   }
 
   if (Array.isArray(node)) {
@@ -26,7 +25,7 @@ function getTextContent(node: React.ReactNode): string {
   return ''; // If the node is neither text nor a React element
 }
 
-function slugify(str: React.ReactNode) {
+function slugify(str: ReactNode) {
   return getTextContent(str)
     .toLowerCase()
     .trim() // Remove whitespace from both ends of a string
@@ -61,6 +60,40 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
   };
 }
 
+type CodeElementProps = ComponentProps<'code'> & {
+  title?: string;
+  'data-line-numbers'?: boolean | string;
+  'data-line-numbers-start'?: number | string;
+};
+
+const filenameDirective = /^\s*(?:\/\/|#|<!--)?\s*\[!code filename:([^\]]+)\]\s*(?:-->)?\s*\n?/;
+
+function getCodeBlock(props: ComponentProps<'pre'>) {
+  const child = React.Children.only(props.children) as ReactElement<CodeElementProps>;
+  const childProps = child.props;
+  const className = childProps.className ?? '';
+  const languageClass = className.split(/\s+/).find((value) => value.startsWith('language-'));
+  const lang = languageClass?.slice('language-'.length) || 'text';
+  let code = String(childProps.children ?? '');
+  const filenameMatch = code.match(filenameDirective);
+  const filename = filenameMatch?.[1]?.trim();
+
+  if (filenameMatch) code = code.slice(filenameMatch[0].length);
+  if (code.endsWith('\n')) code = code.slice(0, -1);
+
+  const rawLineNumbers = childProps['data-line-numbers'];
+  const lineNumbers = rawLineNumbers === undefined ? true : rawLineNumbers !== false && rawLineNumbers !== 'false';
+  const parsedStart = Number(childProps['data-line-numbers-start']);
+
+  return {
+    code,
+    filename: filename ?? childProps.title,
+    lang,
+    lineNumbers,
+    lineNumberStart: Number.isFinite(parsedStart) && parsedStart > 0 ? parsedStart : 1,
+  };
+}
+
 // This file is required to use MDX in `app` directory.
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -74,64 +107,35 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h5: createHeading(5),
     h6: createHeading(6),
 
-    a(props: any) {
-      return <Link {...props} target='_blank' className='hover:opacity-60' />;
-    },
-
-    code({ children }: { children: string | React.ReactNode }) {
-      if (typeof children !== 'string') {
-        return <code>{children}</code>;
-      }
-
-      if (children.startsWith('<')) {
-        return <code>{children}</code>;
-      }
+    a({ href = '', className, ...props }: ComponentProps<'a'>) {
+      const isExternal = /^(?:https?:)?\/\//.test(href);
 
       return (
-        <code>
-          {children
-            .split(/(<[^>]+>)/g)
-            .map((part, i) => (part.startsWith('<') && part.endsWith('>') ? <var key={i}>{part}</var> : part))}
-        </code>
+        <Link
+          {...props}
+          href={href}
+          className={['transition-opacity hover:opacity-60', className].filter(Boolean).join(' ')}
+          target={isExternal ? '_blank' : undefined}
+          rel={isExternal ? 'noreferrer noopener' : undefined}
+        />
       );
     },
 
+    code(props: ComponentProps<'code'>) {
+      return <code {...props} />;
+    },
+
     pre(props) {
-      let child = React.Children.only(props.children) as React.ReactElement;
-      if (!child) return null;
-
-      // @ts-ignore
-      let { className, children: code } = child.props;
-      let lang = className ? className.replace('language-', '') : '';
-      let filename = undefined;
-
-      // Extract `[!code filename:the_file_name.js]` directives from the first line of code
-      let lines = code.split('\n');
-      let filenameRegex = /\[!code filename:(.+)\]/;
-      let match = lines[0].match(filenameRegex);
-      if (match) {
-        filename = match[1];
-        code = lines.splice(1).join('\n');
-      }
-
-      // remove the last newline character if it exists
-      if (code.endsWith('\n')) {
-        code = code.slice(0, -1);
-      }
-
-      // Remove comments starting with `// [!code`
-      let filteredCode = code
-        .replace(/^```ts$/, '')
-        .replace(/^```$/, '')
-        .replace(/\[!code[^\]]*\]/g, '')
-        .replace(/\/\/\s*\[!code[^\n]*/g, '')
-        .replace(/\/\/\s*$/gm, '');
+      const { code, filename, lang, lineNumbers, lineNumberStart } = getCodeBlock(props);
 
       return (
-        <div>
-          <CodeSnippetHeader title={filename || lang} code={filteredCode} />
-          <CodeSnippet code={code} lang={lang} />
-        </div>
+        <figure
+          className='code-snippet not-prose group my-24 overflow-hidden rounded-md border border-black/12 bg-neutral-50 shadow-sm shadow-black/3 dark:border-white/12 dark:bg-neutral-950 dark:shadow-black/20'
+          data-code-snippet
+        >
+          <CodeSnippetHeader title={filename} lang={lang} />
+          <CodeSnippet code={code} lang={lang} lineNumbers={lineNumbers} lineNumberStart={lineNumberStart} />
+        </figure>
       );
     },
   };

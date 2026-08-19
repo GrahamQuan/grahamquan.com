@@ -1,31 +1,108 @@
-import { transformerNotationDiff, transformerNotationHighlight } from '@shikijs/transformers';
+import {
+  transformerNotationDiff,
+  transformerNotationErrorLevel,
+  transformerNotationFocus,
+  transformerNotationHighlight,
+  transformerNotationWordHighlight,
+} from '@shikijs/transformers';
+import type { CSSProperties } from 'react';
 import { createHighlighter } from 'shiki';
 
-import { cn } from '@/lib/utils';
+const supportedLanguages = [
+  'bash',
+  'css',
+  'html',
+  'javascript',
+  'json',
+  'jsx',
+  'markdown',
+  'mdx',
+  'python',
+  'sql',
+  'tsx',
+  'typescript',
+  'yaml',
+] as const;
 
+// Creating a Shiki highlighter is expensive. Hoist and share it across every
+// code block rendered during the build instead of loading grammars per block.
 const highlighterPromise = createHighlighter({
   themes: ['github-dark-dimmed', 'github-light'],
-  langs: ['javascript', 'typescript', 'jsx', 'tsx', 'css', 'html', 'json', 'bash', 'markdown'],
+  langs: [...supportedLanguages],
 });
 
-export default async function CodeSnippet({ code, lang = 'bash' }: { code: string; lang?: string }) {
-  const html = await (await highlighterPromise).codeToHtml(code, {
-    lang,
-    theme: 'github-dark-dimmed',
+const languageAliases: Record<string, (typeof supportedLanguages)[number] | 'text'> = {
+  console: 'bash',
+  env: 'bash',
+  js: 'javascript',
+  md: 'markdown',
+  py: 'python',
+  sh: 'bash',
+  shell: 'bash',
+  shellscript: 'bash',
+  text: 'text',
+  plaintext: 'text',
+  txt: 'text',
+  ts: 'typescript',
+  yml: 'yaml',
+  zsh: 'bash',
+};
+
+function getLanguage(lang: string) {
+  const normalized = lang.toLowerCase().trim();
+
+  if (normalized in languageAliases) {
+    return languageAliases[normalized];
+  }
+
+  return supportedLanguages.find((language) => language === normalized) ?? 'text';
+}
+
+export default async function CodeSnippet({
+  code,
+  lang = 'text',
+  lineNumbers = true,
+  lineNumberStart = 1,
+}: {
+  code: string;
+  lang?: string;
+  lineNumbers?: boolean;
+  lineNumberStart?: number;
+}) {
+  const html = await (
+    await highlighterPromise
+  ).codeToHtml(code, {
+    lang: getLanguage(lang),
+    themes: {
+      light: 'github-light',
+      dark: 'github-dark-dimmed',
+    },
+    defaultColor: false,
     transformers: [
       transformerNotationDiff({
         matchAlgorithm: 'v3',
-        classLineAdd:
-          "relative -mx-5 border-l-2 border-teal-500 bg-gradient-to-r from-teal-300/15 via-teal-300/5 via-[75%] to-transparent pr-20 pl-36 before:absolute before:left-8 before:text-teal-400 before:content-['+']",
-        classLineRemove:
-          "relative -mx-5 border-l-2 border-red-500 bg-gradient-to-r from-red-300/15 via-red-300/5 via-[75%] to-transparent pr-20 pl-36 before:absolute before:left-8 before:text-red-400 before:content-['-']",
-        classActivePre: '[:where(&_.line)]:pl-4',
+        classLineAdd: 'diff add',
+        classLineRemove: 'diff remove',
       }),
       transformerNotationHighlight({
         matchAlgorithm: 'v3',
-        classActiveLine:
-          // '-mx-5 pl-[calc(var(--spacing)*5+2px)] border-l-2 pr-20 border-sky-500 bg-gradient-to-r from-sky-300/15 via-sky-300/5 via-[75%] to-transparent',
-          '-mx-5 pl-[calc(var(--spacing)*5+2px)] border-l-2 pr-20 border-(--color-foreground)/75 bg-gradient-to-r from-(--color-foreground)/15 via-(--color-foreground)/5 via-[75%] to-transparent',
+        classActiveLine: 'highlighted',
+      }),
+      transformerNotationWordHighlight({
+        matchAlgorithm: 'v3',
+        classActiveWord: 'highlighted-word',
+      }),
+      transformerNotationFocus({
+        matchAlgorithm: 'v3',
+        classActiveLine: 'focused',
+        classActivePre: 'has-focused',
+      }),
+      transformerNotationErrorLevel({
+        matchAlgorithm: 'v3',
+        classMap: {
+          error: 'error',
+          warning: 'warning',
+        },
       }),
     ],
   });
@@ -33,17 +110,9 @@ export default async function CodeSnippet({ code, lang = 'bash' }: { code: strin
   return (
     <div
       dangerouslySetInnerHTML={{ __html: html }}
-      // className='not-prose code-block relative [&_pre]:rounded-b [&_pre]:p-12'
-      className={cn(
-        // 'code-block not-prose [&_pre]:rounded-b-[inherit]',
-        'code-block not-prose text-[14px] [&_pre]:rounded-b',
-        // '*:flex *:*:max-w-none *:*:shrink-0 *:*:grow *:overflow-auto *:rounded-lg *:bg-white/10! *:p-5 dark:*:bg-white/5!',
-        // '*:flex *:*:max-w-none *:*:shrink-0 *:*:grow *:overflow-auto *:rounded-b-[inherit] *:bg-white/10! *:p-5 dark:*:bg-white/5!',
-        '*:flex *:*:max-w-none *:*:shrink-0 *:*:grow *:overflow-auto *:bg-black/5! *:p-5 dark:*:bg-white/5!',
-        // '**:[.line]:isolate **:[.line]:block **:[.line]:not-last:min-h-[1lh]',
-        '**:[.line]:isolate **:[.line]:inline-block **:[.line]:w-full **:[.line]:not-last:min-h-[1lh]',
-        // '*:inset-ring *:inset-ring-white/10 dark:*:inset-ring-white/5',
-      )}
+      className='code-snippet-viewport'
+      data-line-numbers={lineNumbers || undefined}
+      style={{ '--code-line-number-start': lineNumberStart } as CSSProperties}
     />
   );
 }

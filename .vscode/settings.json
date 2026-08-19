@@ -1,16 +1,17 @@
 {
   "i18n-ally.localesPaths": ["messages"],
 
-  // Set Biome as the default formatter
-  "editor.defaultFormatter": "biomejs.biome",
+  // Use the official Oxc extension for Oxlint and Oxfmt
+  "oxc.configPath": ".oxlintrc.json",
+  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
 
   // Enable format on save
   "editor.formatOnSave": true,
 
-  // Enable code actions on save (for Biome fixes)
+  // Enable safe Oxlint fixes on save
   "editor.codeActionsOnSave": {
-    "quickfix.biome": "explicit",
-    "source.organizeImports.biome": "explicit"
+    "source.fixAll.oxc": "explicit"
   },
 
   // Disable ESLint
@@ -19,23 +20,23 @@
   // Disable Prettier
   "prettier.enable": false,
 
-  // Use Biome for specific file types
+  // Use Oxfmt for specific file types
   "[javascript]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[javascriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[json]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "biomejs.biome"
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   }
 }
