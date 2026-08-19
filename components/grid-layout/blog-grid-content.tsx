@@ -2,14 +2,10 @@ import { ArrowUpLeft, Pin, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment } from 'react';
 
-import type { getBlogPostBySlug } from '@/lib/blog-utils';
+import type { BlogPost } from '@/lib/blog-utils';
 import { formatDate } from '@/lib/time-utils';
 
-export default function BlogGridContent({
-  list,
-}: {
-  list: NonNullable<Awaited<ReturnType<typeof getBlogPostBySlug>>>[];
-}) {
+export default function BlogGridContent({ list }: { list: BlogPost[] }) {
   return (
     <div className='bg-border-color mdx:w-3/4 mx-auto grid w-11/12 grid-cols-13 gap-px'>
       {list.map((item, idx) => (

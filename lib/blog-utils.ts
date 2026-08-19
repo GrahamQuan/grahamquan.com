@@ -1,28 +1,31 @@
 import fs from 'fs/promises';
 import path from 'path';
-import React from 'react';
+import type { FC, ReactElement } from 'react';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export async function getBlogPostBySlug(slug: string): Promise<{
-  Component: React.FC;
-  metadata: {
-    title: string;
-    description: string;
-    date: string;
-    keywords?: string[];
-    excerpt: React.ReactElement;
-    // authors: Author[];
-    image?: {
-      src: string;
-    };
-    private?: boolean;
-    pin?: boolean;
+export type BlogPostMetadata = {
+  title: string;
+  description: string;
+  date: string;
+  keywords?: string[];
+  excerpt?: ReactElement;
+  image?: {
+    src: string;
   };
+  private?: boolean;
+  pin?: boolean;
+};
+
+export type BlogPost = {
+  Component: FC;
+  metadata: BlogPostMetadata;
   slug: string;
-} | null> {
+};
+
+export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
     // Check if the file exists
     if (!(await fs.stat(path.join(__dirname, `../__blog__/${slug}/index.mdx`)).catch(() => null))) {
@@ -37,7 +40,6 @@ export async function getBlogPostBySlug(slug: string): Promise<{
     return {
       Component: blogPost.default,
       metadata: {
-        // authors: [],
         ...blogPost.metadata,
       },
       slug,
