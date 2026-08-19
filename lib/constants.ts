@@ -13,10 +13,6 @@ export const NavigationList = [
     title: 'Projects',
     href: '/projects',
   },
-  {
-    title: 'About',
-    href: '/about',
-  },
 ];
 
 /* footer */

@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang='en' suppressHydrationWarning data-scroll-behavior='smooth'>
       <head>
         <ThemeScript />
         <GoogleAnalytics gaId={envClient.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
