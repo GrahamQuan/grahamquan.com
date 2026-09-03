@@ -1,10 +1,9 @@
 import createMDX from '@next/mdx';
 import type { NextConfig } from 'next';
-import remarkGfm from 'remark-gfm';
-import remarkCodeMeta from './lib/remark-code-meta';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  agentRules: false,
   output: 'export',
   experimental: {
     mdxRs: {
@@ -19,7 +18,7 @@ const nextConfig: NextConfig = {
 
 const withMDX = createMDX({
   options: {
-    remarkPlugins: [remarkGfm, remarkCodeMeta],
+    remarkPlugins: ['remark-gfm', './lib/remark-code-meta.ts'],
     rehypePlugins: [],
   },
 });

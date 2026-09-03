@@ -6,7 +6,7 @@
   "author": "Graham Quan",
   "scripts": {
     "dev": "next dev",
-    "build": "next build --webpack",
+    "build": "next build",
     "start": "next start",
     "lint": "oxlint --quiet",
     "lint:fix": "oxlint --fix --quiet",
@@ -41,7 +41,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@next/mdx": "^15.1.6",
+    "@next/mdx": "^16.3.1",
     "@shikijs/transformers": "^2.3.2",
     "@tailwindcss/postcss": "4.3.3",
     "@tailwindcss/typography": "^0.5.16",
