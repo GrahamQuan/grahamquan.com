@@ -1,9 +1,12 @@
-export const metadata = {
+import { defineBlogMetadata } from '@/lib/blog-metadata';
+
+export const metadata = defineBlogMetadata({
   title: 'Deploy typescript full-satck app to vercel: front-end(vite + react) and back-end(node + express)',
   date: '2024-02-08',
   description: 'Maximize your full-stack development potential with TypeScript, React, and Express, deploy to Vercel using Vite for lightning-fast front-end development alongside robust back-end solutions. And read environment variables',
+  topic: 'development',
   keywords: ['full-stack', 'MERN', 'TypeScript', 'React', 'Express', 'Vite', 'Deployment', 'Vercel'],
-};
+});
 
 ## my file structure
 

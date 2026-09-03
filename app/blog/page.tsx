@@ -1,9 +1,8 @@
 import BlogGridContent from '@/components/grid-layout/blog-grid-content';
-import { getBlogPostBySlug, getBlogPostSlugs, nonNullable } from '@/lib/blog-utils';
+import { getPublicBlogPosts } from '@/lib/blog-utils';
 
 export default async function Page() {
-  let slugs = await getBlogPostSlugs();
-  let blogs = (await Promise.all(slugs.map(getBlogPostBySlug))).filter(nonNullable);
+  const blogs = await getPublicBlogPosts();
 
   return (
     <div className='flex flex-col gap-12 p-24'>

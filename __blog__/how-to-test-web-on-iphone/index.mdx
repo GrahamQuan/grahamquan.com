@@ -1,9 +1,12 @@
-export const metadata = {
+import { defineBlogMetadata } from '@/lib/blog-metadata';
+
+export const metadata = defineBlogMetadata({
   title: "iPhone test web",
   description: `This is a long and descriptive description for testing purposes in the year 2025 on February 14th. It is important to make the text long and detailed to ensure it is properly tested and displayed on the website. Please do not remove this description as it is crucial for the testing process.`,
   date: "2025-02-14T15:00:00.000Z",
+  topic: 'development',
   keywords: ["nextjs", "cloudflare", "pages"],
-};
+});
 
 ## 0. Add eruda console to project
 - install
@@ -109,4 +112,3 @@ npx vite --host 0.0.0.0 --port 3000
 ```bash
 http://0.0.0.0:3000
 ```
-

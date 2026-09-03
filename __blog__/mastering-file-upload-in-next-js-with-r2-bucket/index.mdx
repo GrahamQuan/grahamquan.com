@@ -1,9 +1,12 @@
-export const metadata = {
+import { defineBlogMetadata } from '@/lib/blog-metadata';
+
+export const metadata = defineBlogMetadata({
   title: 'Mastering File Upload and Download in Next.js - A Comprehensive Guide with Cloudflare R2 Bucket (S3-Compatible)',
   description: 'Learn how to upload and download files in Next.js using Cloudflare R2 bucket (S3-Compatible) with production ready code',
   date: '2025-03-08',
+  topic: 'development',
   pin: true,
-};
+});
 
 > this blog is WIP, I will update it soon, github code for `outline 1` and `outline 2` are done, `outline 3` is not done yet
 

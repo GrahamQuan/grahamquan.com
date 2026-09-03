@@ -6,9 +6,11 @@ import React from 'react';
 import GitHubCommentsSection from '@/components/blog/github-comments-section';
 import GridContainer from '@/components/grid-layout/grid-container';
 import GridSmallBackground from '@/components/grid-layout/grid-small-background';
+import { BLOG_TOPICS } from '@/lib/blog-topics';
 import { getBlogPostBySlug, getBlogPostSlugs } from '@/lib/blog-utils';
 import { envClient } from '@/lib/env-client';
 import { formatDate } from '@/lib/time-utils';
+import { cn } from '@/lib/utils';
 
 type Props = {
   params: Promise<{
@@ -25,7 +27,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   let params = await props.params;
   let post = await getBlogPostBySlug(params.slug);
 
-  if (!post) {
+  if (!post || post.metadata.private) {
     return notFound();
   }
 
@@ -41,9 +43,11 @@ export default async function DocPage(props: Props) {
   let params = await props.params;
   let post = await getBlogPostBySlug(params.slug);
 
-  if (!post) {
+  if (!post || post.metadata.private) {
     return notFound();
   }
+
+  const topic = BLOG_TOPICS[post.metadata.topic];
 
   return (
     <>
@@ -53,10 +57,21 @@ export default async function DocPage(props: Props) {
       <div className='grid grid-cols-1'>
         {/* <div className='col-start-2 row-span-2 border-r border-l border-gray-950/5 max-xl:hidden dark:border-white/10'></div> */}
         <div className='max-mdx:mx-auto max-mdx:w-full max-xl:max-w-(--breakpoint-mdx)'>
-          <div className='mt-24 flex w-full justify-between px-4 font-mono text-sm/7 font-medium tracking-widest lg:px-12'>
-            <time className='mt-auto opacity-60' dateTime={post.metadata.date}>
-              {formatDate(post.metadata.date)}
-            </time>
+          <div className='mt-24 flex w-full items-end justify-between gap-12 px-4 font-mono text-sm/7 font-medium tracking-widest lg:px-12'>
+            <div className='flex flex-wrap items-center gap-x-12 gap-y-4'>
+              <time className='opacity-60' dateTime={post.metadata.date}>
+                {formatDate(post.metadata.date)}
+              </time>
+              <Link
+                href={`/topics/${post.metadata.topic}`}
+                className={cn(
+                  'rounded-sm uppercase hover:underline focus-visible:outline-2 focus-visible:outline-offset-4',
+                  topic.accentClass,
+                )}
+              >
+                {topic.label}
+              </Link>
+            </div>
             <Link
               href='/blog'
               className='flex items-center gap-6 uppercase opacity-60 hover:underline hover:opacity-100'

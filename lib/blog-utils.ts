@@ -1,23 +1,12 @@
 import fs from 'fs/promises';
 import path from 'path';
-import type { FC, ReactElement } from 'react';
+import type { FC } from 'react';
 import { fileURLToPath } from 'url';
+
+import type { BlogPostMetadata } from '@/lib/blog-metadata';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-export type BlogPostMetadata = {
-  title: string;
-  description: string;
-  date: string;
-  keywords?: string[];
-  excerpt?: ReactElement;
-  image?: {
-    src: string;
-  };
-  private?: boolean;
-  pin?: boolean;
-};
 
 export type BlogPost = {
   Component: FC;
@@ -84,6 +73,13 @@ export async function getBlogPostSlugs(): Promise<string[]> {
   posts.sort((a, b) => Number(b.pin) - Number(a.pin));
 
   return posts.map((post) => post.slug);
+}
+
+export async function getPublicBlogPosts(): Promise<BlogPost[]> {
+  const slugs = await getBlogPostSlugs();
+  const posts = await Promise.all(slugs.map(getBlogPostBySlug));
+
+  return posts.filter(nonNullable);
 }
 
 export function nonNullable<T>(x: T | null): x is NonNullable<T> {

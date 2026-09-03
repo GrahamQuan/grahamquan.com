@@ -1,11 +1,10 @@
 import HomeArticleGrid from '@/components/home/home-article-grid';
 import HomeHero from '@/components/home/home-hero';
-import { getBlogPostBySlug, getBlogPostSlugs, nonNullable } from '@/lib/blog-utils';
+import { getPublicBlogPosts } from '@/lib/blog-utils';
 import { ProjectList } from '@/lib/constants';
 
 export default async function Home() {
-  const slugs = await getBlogPostSlugs();
-  const articles = (await Promise.all(slugs.map(getBlogPostBySlug))).filter(nonNullable);
+  const articles = await getPublicBlogPosts();
 
   return (
     <div>

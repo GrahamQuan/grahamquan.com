@@ -10,6 +10,10 @@ export const NavigationList = [
     href: '/blog',
   },
   {
+    title: 'Topics',
+    href: '/topics',
+  },
+  {
     title: 'Projects',
     href: '/projects',
   },
