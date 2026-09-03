@@ -70,6 +70,12 @@
   }
 }
 
+html[data-toc-scroll-lock='true'],
+html[data-toc-scroll-lock='true'] body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 .light {
   color-scheme: light;
 }

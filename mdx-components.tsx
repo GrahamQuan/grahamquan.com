@@ -42,6 +42,7 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
       `h${level}`,
       {
         id: slug,
+        tabIndex: -1,
         className: 'scroll-mt-72',
       },
       [

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { NavigationList } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
+import BlogTableOfContents from '../blog/blog-table-of-contents';
 import GridLine from '../grid-layout/grid-line';
 import MobileMenu from './mobile-menu';
 
@@ -43,9 +44,12 @@ export default function Header() {
       <GridLine />
       <nav className='border-color mdx:border-x mdx:pr-0 mdx:pl-12 relative mx-auto flex h-64 max-w-4xl items-center justify-between gap-12 pr-24 pl-24'>
         <div className='mdx:block mdx:-left-33 bg-border-color absolute top-0 left-12 h-full w-px' />
-        <HeaderItem href='/' className='border-l-0 px-0'>
-          Home
-        </HeaderItem>
+        <div className='flex h-full items-center gap-12'>
+          <HeaderItem href='/' className='border-l-0 px-0'>
+            Home
+          </HeaderItem>
+          <BlogTableOfContents />
+        </div>
         <MobileMenu />
         <div className='border-color mdx:flex ml-auto hidden h-full border-l'>
           {NavigationList.map((el) => (
