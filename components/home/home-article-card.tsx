@@ -1,3 +1,4 @@
+import TitleTransition from '@/components/transitions/title-transition';
 import Link from 'next/link';
 
 import { BLOG_TOPICS } from '@/lib/blog-topics';
@@ -20,9 +21,11 @@ export default function HomeArticleCard({ article, index }: { article: BlogPost;
         </time>
       </div>
 
-      <h2 className='my-auto text-balance text-center font-mono text-lg leading-relaxed font-medium group-hover:underline group-hover:underline-offset-4'>
-        {article.metadata.title}
-      </h2>
+      <TitleTransition name={`article-${article.slug}`}>
+        <h2 className='my-auto text-balance text-center font-mono text-lg leading-relaxed font-medium group-hover:underline group-hover:underline-offset-4'>
+          {article.metadata.title}
+        </h2>
+      </TitleTransition>
 
       <div className='flex items-end justify-between font-mono text-xs opacity-40'>
         <span>{String(index + 1).padStart(2, '0')}</span>

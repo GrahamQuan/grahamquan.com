@@ -1,3 +1,4 @@
+import TitleTransition from '@/components/transitions/title-transition';
 import { ArrowUpLeft } from 'lucide-react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
@@ -63,7 +64,9 @@ export default async function TopicPage({ params }: Props) {
           All Topics
         </Link>
         <p className={cn('font-mono text-xs uppercase', topic.accentClass)}>{topic.shortLabel}</p>
-        <h1 className='mt-6 font-mono text-2xl font-bold'>{topic.label}</h1>
+        <TitleTransition name={`topic-${posts[0].metadata.topic}`}>
+          <h1 className='mt-6 font-mono text-2xl font-bold'>{topic.label}</h1>
+        </TitleTransition>
         <p className='mt-8 max-w-xl text-sm leading-relaxed opacity-60'>{topic.description}</p>
         <p className='mt-12 font-mono text-xs opacity-50'>
           {posts.length} {posts.length === 1 ? 'article' : 'articles'}

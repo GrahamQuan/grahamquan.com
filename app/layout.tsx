@@ -2,6 +2,7 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
 
+import PageTransition from '@/components/transitions/page-transition';
 import Footer from '@/components/screen/footer';
 import Header from '@/components/screen/header';
 import ThemeScript from '@/components/scripts/theme-script';
@@ -50,7 +51,9 @@ export default function RootLayout({
           <div className='mdx:grid-cols-[auto_2rem_56rem_2rem_auto] grid grid-cols-[12px_auto_12px] grid-rows-[1fr_auto]'>
             <div className='border-color mdx:block mdx:border-l mdx:col-start-2 col-start-0 row-span-1' />
             <div className='border-color mx-auto min-h-full w-full max-w-4xl border-x'>
-              <main className='w-full'>{children}</main>
+              <main className='w-full'>
+                <PageTransition>{children}</PageTransition>
+              </main>
               <Footer />
             </div>
             <div className='border-color mdx:block mdx:border-r mdx:col-start-4 col-start-2 row-span-1' />

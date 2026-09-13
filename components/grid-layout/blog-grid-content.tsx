@@ -1,3 +1,4 @@
+import TitleTransition from '@/components/transitions/title-transition';
 import { ArrowUpLeft, Pin, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment } from 'react';
@@ -37,15 +38,17 @@ export default function BlogGridContent({ list }: { list: BlogPost[] }) {
             >
               {BLOG_TOPICS[item.metadata.topic].label}
             </Link>
-            <h2 className='font-mono text-lg font-bold'>
-              <Link
-                href={`/blog/${item.slug}`}
-                className='group/title rounded-sm hover:underline focus-visible:outline-2 focus-visible:outline-offset-4'
-              >
-                <ArrowUpLeft className='mr-6 inline size-16 shrink-0 transition-transform group-hover/title:-translate-x-1 group-hover/title:translate-y-1' />
-                {item.metadata.title}
-              </Link>
-            </h2>
+            <TitleTransition name={`article-${item.slug}`}>
+              <h2 className='font-mono text-lg font-bold'>
+                <Link
+                  href={`/blog/${item.slug}`}
+                  className='group/title rounded-sm hover:underline focus-visible:outline-2 focus-visible:outline-offset-4'
+                >
+                  <ArrowUpLeft className='mr-6 inline size-16 shrink-0 transition-transform group-hover/title:-translate-x-1 group-hover/title:translate-y-1' />
+                  {item.metadata.title}
+                </Link>
+              </h2>
+            </TitleTransition>
             <p className='mt-4 line-clamp-5 text-sm opacity-70' title={item.metadata.description}>
               {item.metadata.description}
             </p>

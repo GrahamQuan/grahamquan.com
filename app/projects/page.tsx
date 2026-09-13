@@ -1,3 +1,4 @@
+import TitleTransition from '@/components/transitions/title-transition';
 import ProjectCard from '@/components/project/project-card';
 import { ProjectList } from '@/lib/constants';
 
@@ -6,7 +7,9 @@ export default function Page() {
 
   return (
     <div className='flex flex-col gap-12 p-24'>
-      <h1 className='text-2xl font-bold'>Projects I&apos;ve done</h1>
+      <TitleTransition>
+        <h1 className='text-2xl font-bold'>Projects I&apos;ve done</h1>
+      </TitleTransition>
       <div className='mdx:grid-cols-2 grid grid-cols-1 gap-px bg-black/15 dark:bg-white/5'>
         {ProjectList.map((project) => (
           <ProjectCard key={project.title} {...project} />

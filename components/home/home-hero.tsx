@@ -1,3 +1,4 @@
+import TitleTransition from '@/components/transitions/title-transition';
 import Link from 'next/link';
 
 import { AUTHOR } from '@/lib/constants';
@@ -20,9 +21,11 @@ export default function HomeHero({ articleCount, projectCount }: { articleCount:
   return (
     <section className='border-color mdx:grid-cols-[minmax(0,1fr)_208px] grid min-h-448 grid-cols-1 border-b'>
       <div className='flex min-w-0 flex-col justify-between p-24 mdx:p-36'>
-        <h1 className='w-full max-w-560' aria-label='Graham Quan'>
-          <GrahamQuanSignature />
-        </h1>
+        <TitleTransition>
+          <h1 className='w-full max-w-560' aria-label='Graham Quan'>
+            <GrahamQuanSignature />
+          </h1>
+        </TitleTransition>
 
         <div className='flex items-center gap-8 font-mono text-xs tracking-widest uppercase opacity-55'>
           <span className='size-6 rounded-full bg-emerald-500' />

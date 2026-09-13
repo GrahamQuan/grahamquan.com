@@ -1,3 +1,4 @@
+import TitleTransition from '@/components/transitions/title-transition';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
@@ -24,7 +25,9 @@ export default async function TopicsPage() {
   return (
     <div className='flex flex-col gap-12 p-24'>
       <div className='px-12'>
-        <h1 className='font-mono text-2xl font-bold'>Topics</h1>
+        <TitleTransition>
+          <h1 className='font-mono text-2xl font-bold'>Topics</h1>
+        </TitleTransition>
         <p className='mt-6 max-w-xl text-sm opacity-60'>Browse published articles by their primary topic.</p>
       </div>
 
@@ -39,9 +42,11 @@ export default async function TopicsPage() {
               <span className='opacity-40'>{String(topic.order).padStart(2, '0')}</span>
               <span className={cn('uppercase', topic.accentClass)}>{topic.shortLabel}</span>
             </div>
-            <h2 className='mt-24 font-mono text-xl font-semibold group-hover:underline group-hover:underline-offset-4'>
-              {topic.label}
-            </h2>
+            <TitleTransition name={`topic-${slug}`}>
+              <h2 className='mt-24 font-mono text-xl font-semibold group-hover:underline group-hover:underline-offset-4'>
+                {topic.label}
+              </h2>
+            </TitleTransition>
             <p className='mt-8 text-sm leading-relaxed opacity-60'>{topic.description}</p>
             <div className='mt-auto flex items-end justify-between pt-24 font-mono text-xs'>
               <span className='opacity-50'>

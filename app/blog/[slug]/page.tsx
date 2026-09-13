@@ -1,3 +1,4 @@
+import TitleTransition from '@/components/transitions/title-transition';
 import { ArrowUpLeft, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -81,9 +82,11 @@ export default async function DocPage(props: Props) {
             </Link>
           </div>
           <GridContainer className='mdx:mb-32 px-12'>
-            <h1 className='mdx:text-4xl flex min-h-80 items-center py-8 font-mono text-2xl font-bold tracking-tight text-pretty text-gray-950 [view-transition-name:blog-page] dark:text-gray-200'>
-              {post.metadata.title}
-            </h1>
+            <TitleTransition name={`article-${post.slug}`}>
+              <h1 className='mdx:text-4xl flex min-h-80 items-center py-8 font-mono text-2xl font-bold tracking-tight text-pretty text-gray-950 dark:text-gray-200'>
+                {post.metadata.title}
+              </h1>
+            </TitleTransition>
           </GridContainer>
         </div>
         {/* <div className='mdx:max-w-(--breakpoint-mdx) max-mdx:mt-32 max-xl:mx-auto max-xl:w-full'> */}

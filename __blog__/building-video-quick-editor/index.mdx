@@ -1,0 +1,104 @@
+import { defineBlogMetadata } from '@/lib/blog-metadata';
+
+export const metadata = defineBlogMetadata({
+  title: 'Building Video Quick Editor: Local Editing, an Agent, and a Reliable Export Queue',
+  date: '2026-09-12',
+  description: 'Building a macOS video editor with Electron and FFmpeg: a shared draft for manual and agent edits, a serial export queue, output validation, installation, and model configuration.',
+  topic: 'development',
+  keywords: ['Video Quick Editor', 'Electron', 'React', 'TypeScript', 'FFmpeg', 'Agent', 'macOS'],
+});
+
+Video Quick Editor is a local macOS video tool I built for trimming, combining clips, and adding text watermarks. You can edit directly in the interface or describe your edits in chat. Both approaches modify the same draft, and FFmpeg runs locally to produce the final video.
+
+Source code: [GrahamQuan/video-quick-editor](https://github.com/GrahamQuan/video-quick-editor). This article documents the local workspace as of September 12, 2026, including uncommitted changes to the export queue and app updates. It does not imply that these features are already available in a public installer.
+
+## Common editing tasks in one desktop window
+
+After importing an MP4, MOV, or MKV file, you can select clips, set their start and end times, and add a white text watermark with a black outline. Trimming submits only the current clip; combining produces one video from explicitly selected clips in the specified order. Previewing a source and adding it to a combination are separate actions.
+
+Watermarks belong to individual clips. Text, font, position, size, margins, and outline thickness are saved separately for each clip. Switching clips restores their own settings, and duplicating a clip creates an independently editable copy of its configuration.
+
+Time ranges use integer microseconds and `[start, end)` intervals. Out-of-bounds operations are rejected. The same source can appear multiple times in a draft, with a separate clip ID for each occurrence. Clips are never merged simply because they reference the same file.
+
+The player helps locate edit points, while an overlaid watermark makes layout adjustments quick. To check the actual exported appearance, FFmpeg can generate a rendered frame preview. Sources that cannot play directly can use proxy videos, but final exports still read the original files.
+
+## Electron handles interaction; FFmpeg handles media
+
+The project uses pnpm workspaces and Turborepo. The desktop app is built with Electron, React, TypeScript, TanStack Router, and Vite. Node.js invokes the local FFmpeg and ffprobe executables directly for media processing.
+
+The code has three main parts:
+
+- `packages/shared` defines shared types and Zod runtime contracts to validate data crossing process boundaries.
+- `packages/media-core` handles probing, export planning, execution, validation, and publishing final files. Tool paths, output settings, and cancellation signals are passed explicitly.
+- The desktop main process manages sessions, file mappings, model configuration, and task state. The React renderer presents the interface and requests operations through a narrow preload API.
+
+The renderer enables context isolation and sandboxing, with Node integration disabled. FFmpeg launches with structured arguments, no shell, and `-nostdin`. Watermark text is written to a UTF-8 file, and text expansion is disabled during rendering so user text is not interpreted as a filter expression.
+
+## Manual editing and the agent share one draft
+
+The agent uses AI SDK Core and an adapter compatible with OpenAI Chat Completions. The model operates on the editing service in the main process through structured tools.
+
+For example, you can enter:
+
+```text
+Trim and combine these videos:
+1. "/Users/you/Movies/a.mp4": keep seconds 1 through 3
+2. "/Users/you/Movies/b.mp4": keep seconds 5 through 10
+Combine the trimmed clips, then export the video.
+```
+
+Requests containing local paths import the files locally first and wait for the shared draft to update. Paths are then replaced with asset references before the request reaches the model. Assets in numbered lists stay paired with their time ranges. If an import fails, no model request starts, while completed imports remain in the interface.
+
+The model receives text instructions, display filenames, and necessary media parameters. Video, audio, and preview images stay on the device. It can request controlled editing and export tools, but cannot execute arbitrary shell commands or access the filesystem freely.
+
+Manual actions and model calls can interleave, so every draft mutation checks `expectedRevision`. Export plans are bound to the revision at creation and become invalid when the draft changes. Submitted tasks use frozen snapshots, allowing users to keep adjusting time ranges without changing an export already in progress. Retrying the same `requestId` also does not create duplicate export tasks.
+
+The agent can start an export only when explicitly asked. Stopping a response, clearing chat, and cancelling an export have separate meanings. Clearing chat stops the current response and removes model context, while preserving the editing draft and submitted tasks.
+
+## An export queue that lets editing continue
+
+The current workspace adds a unified export queue. Clicking “Add trim to queue” or “Add combination to queue” freezes the selected clips, order, ranges, and settings as a separate output, leaving the interface ready for the next edit.
+
+Tasks run serially in FIFO order, including processing, validation, publishing, and cleanup. Waiting tasks show only their queue position; processing stages and progress appear once execution begins.
+
+Cancelling a waiting task removes it immediately. Cancelling an active task waits for its subprocess to exit and partial files to be cleaned up before starting the next task. Failed tasks are revalidated before being added to the end of the queue. Clearing completed task records does not delete exported videos.
+
+The main process owns queue state, so page navigation and renderer reloads do not lose it. The queue currently lasts only for the active app session and cannot be restored after quitting. If tasks remain when closing the app, users can stay in the app or cancel all tasks and wait for cleanup before exiting.
+
+## Output formats need an explicit contract
+
+New drafts default to `mp4-compatible`: an actual MP4 container, H.264/libx264, CRF 18, the medium preset, 8-bit yuv420p, and faststart. When audio exists, output uses AAC at 48 kHz, stereo, and 192 kb/s. Imported MOV and MKV files are also exported as MP4 under this contract.
+
+Single clips default to `accurate` trimming with re-encoding. Multiple clips default to `normalize`, which standardizes dimensions and frame rate, scales proportionally, and adds black padding. Combinations with audio normalize the audio format and fill missing or short sections with silence.
+
+Explicitly choosing `copy` preserves stream-copy semantics without re-encoding. Cut boundaries depend on keyframes and packets, and watermarks cannot be added. Older requests that omit the output profile retain the `source` contract. A filename extension cannot substitute for container and codec selection; conflicting settings are rejected.
+
+Re-encoding currently supports ordinary SDR, 8-bit inputs without rotation metadata. HDR, 10-bit, and rotated sources are explicitly blocked. Output uses only the first ordinary video stream and the first audio stream, discarding additional tracks, subtitles, attachments, and chapters.
+
+## Success means validated output saved safely
+
+Electron resolves the system Downloads directory as the default destination. Filenames use local time, such as `2026_09_12--14_30_00.mp4`, with a numeric suffix for collisions. Default names are reserved when tasks enter the queue so multiple tasks do not compete for the same destination.
+
+Output is first written to a temporary location on the destination filesystem. Only after validation with ffprobe and other checks is it published to the final path. Existing files are never overwritten without explicit replacement authorization. Source files, including their symbolic-link and hard-link aliases, cannot be output destinations. Failure and cancellation clean up only the current task's partial files.
+
+This also defines task status: a successful FFmpeg exit is not enough to show completion. Output validation and final saving must finish first.
+
+## Model configuration and installation have their own boundaries
+
+Model configuration supports multiple named profiles, each storing an endpoint, model ID, context budget, and key reference. Switching models in chat affects the next turn. The current turn captures a configuration snapshot before importing paths and keeps it throughout the tool loop.
+
+API keys are encrypted with Electron safeStorage. Regular configuration and the settings-read IPC expose only whether a key exists. Changing endpoints requires handling credentials again to avoid sending an old endpoint's key to a new address. Connection tests check text responses, streaming, and a tool loop without side effects, but do not save the form on the user's behalf.
+
+The macOS arm64 installer includes Electron, so users do not need Node.js or pnpm at runtime. FFmpeg and ffprobe are external dependencies that the app discovers and checks rather than downloading or installing automatically. Missing tools block media operations, while model configuration and text-only chat remain available.
+
+The repository has a main-branch prerelease workflow that runs CI checks and packaging, uploads the DMG and checksum files, and then publishes the release. The current workspace also adds manual update checks in settings: it reads GitHub Releases and opens the download page when a newer version is available, leaving users to download and replace the app.
+
+Installers currently use local ad-hoc signing and have not completed Developer ID signing or notarization. Manual update checks do not include automatic downloading or installation.
+
+## Validation notes and next steps
+
+The repository includes unit tests for shared contracts, revisions, idempotent exports, output protection, and model configuration. Media integration tests use temporary lavfi sources to check real FFmpeg output. Electron tests cover the interface, IPC, queue, and model-tool interactions.
+
+I did not rerun the video project's test suite while preparing this article, so this is not a claim that the current workspace has passed every acceptance check. Automated model tests use mock endpoints; text, streaming, and multistep tool calls against real providers still need separate validation.
+
+The app does not yet offer a professional multitrack timeline, transitions, subtitle editing, project persistence, or crash recovery. The current focus is connecting trimming, combining, watermarking, and natural-language editing into a reliable workflow: edits can be reviewed, task state can be tracked, final files are validated, and cancellation or failure preserves existing files.
