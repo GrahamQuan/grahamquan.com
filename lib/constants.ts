@@ -44,6 +44,24 @@ export type Project = {
 
 export const ProjectList: Project[] = [
   {
+    title: 'Video Quick Editor',
+    description:
+      'A local macOS video editor for trimming clips, combining videos, and adding text watermarks, with AI Agent automation. Built with Electron, React, TypeScript, and FFmpeg.',
+    keywords: ['Electron', 'React', 'TypeScript', 'FFmpeg', 'AI Agent', 'macOS'],
+    href: '/blog/building-video-quick-editor',
+    githubLink: 'https://github.com/GrahamQuan/video-quick-editor',
+    imgSrc: '/projects/video_quick_editor_merge.png',
+  },
+  {
+    title: 'YTDock',
+    description:
+      'A macOS terminal tool for downloading YouTube videos, compressing local videos, and burning SRT subtitles. Built with Python, yt-dlp, FFmpeg, and prompt-toolkit.',
+    keywords: ['Python', 'macOS', 'yt-dlp', 'FFmpeg', 'prompt-toolkit'],
+    href: '/blog/building-ytdock',
+    githubLink: 'https://github.com/GrahamQuan/ytdock',
+    imgSrc: '/projects/ytdock_grid_img.png',
+  },
+  {
     title: 'Discord Clone',
     description: `Typescript, React, Next.js 13 app route, Prisma, MySQL, Zustand, React-Query, Zod, React-hook-form, TailwindCSS, ShadcnUI`,
     keywords: [
